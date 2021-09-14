@@ -3,7 +3,10 @@ package com.gosha.kalosha.hauzijan.dto;
 import com.gosha.kalosha.hauzijan.model.Word;
 import lombok.Data;
 
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Data
 public class WordDto
@@ -30,6 +33,9 @@ public class WordDto
 
     public static WordDto fromWord(Word w)
     {
-        return new WordDto(w.getWord(), w.getLemma(), w.getPos(), w.getGram());
+        Map<String, String> gram = Arrays.stream(w.getGrammar().split("\\|"))
+                .map(s -> s.split("="))
+                .collect(Collectors.toMap(e -> e[0], e -> e[1], (e1, e2) -> e1));
+        return new WordDto(w.getWord(), w.getLemma(), w.getPos(), gram);
     }
 }

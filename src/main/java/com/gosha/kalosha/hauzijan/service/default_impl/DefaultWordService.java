@@ -6,7 +6,6 @@ import com.gosha.kalosha.hauzijan.repository.WordRepository;
 import com.gosha.kalosha.hauzijan.service.WordService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class DefaultWordService implements WordService

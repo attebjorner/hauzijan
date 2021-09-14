@@ -23,14 +23,8 @@ public class Word
 
     private String pos;
 
-    @ElementCollection(fetch = FetchType.EAGER)
-    @CollectionTable(
-            name = "wordform_gram",
-            joinColumns = {@JoinColumn(name = "wordform_id", referencedColumnName = "id")}
-    )
-    @MapKeyColumn(name = "gram_feature")
-    @Column(name = "gram_value")
-    private Map<String, String> gram;
+    @Column(name = "gram")
+    private String grammar;
 
     private String translation;
 

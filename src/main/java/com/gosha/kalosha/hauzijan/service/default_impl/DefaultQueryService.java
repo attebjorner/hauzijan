@@ -32,70 +32,66 @@ public class DefaultQueryService implements QueryService
     @Transactional
     public List<SentenceDto> getByParameters(Map<String, Object> query, Integer page, Integer maxResults)
     {
-//        List<Object> values = new ArrayList<>(query.values());
-//        values.add((page == null) ? 0 : page - 1);
-//        values.add((maxResults == null) ? 10 : maxResults);
-//        var queryFunction = COMPLEX_QUERY_METHODS.get(query.keySet());
-//        if (queryFunction == null)
-//        {
-//            throw new IllegalStateException("Wrong query parameters");
-//        }
-//        List<Sentence> sentences = queryFunction.apply(values.toArray());
-//        if (sentences.isEmpty())
-//        {
-//            throw new NoSentencesFoundException("No sentences found");
-//        }
-//        return sentences.stream().map(SentenceDto::fromSentence).collect(Collectors.toList());
-        return null;
+        var queryFunction = COMPLEX_QUERY_METHODS.get(query.keySet());
+        if (queryFunction == null)
+        {
+            throw new IllegalStateException("Wrong query parameters");
+        }
+        if (query.containsKey("gram"))
+        {
+            String grammar = "%"
+                    + ((Map<String, String>) query.get("gram")).entrySet()
+                    .stream()
+                    .map(e -> e.getKey() + "=" + e.getValue())
+                    .collect(Collectors.joining("%"))
+                    + "%";
+            query.put("gram", grammar);
+        }
+        List<Sentence> sentences = queryFunction.apply(query.values().toArray());
+        if (sentences.isEmpty())
+        {
+            throw new NoSentencesFoundException("No sentences found");
+        }
+        return sentences.stream().map(SentenceDto::fromSentence).collect(Collectors.toList());
     }
 
     @Override
     @Transactional
     public List<SentenceDto> getBySimpleQuery(String queryString, Integer page, Integer maxResults)
     {
-//        List<Sentence> sentences = sentenceDao.getByQuery(
-//                queryString, (page == null) ? 0 : page - 1, (maxResults == null) ? 10 : maxResults
-//        );
-//        if (sentences.isEmpty())
-//        {
-//            throw new NoSentencesFoundException("No sentences found");
-//        }
-//        return sentences.stream().map(SentenceDto::fromSentence).collect(Collectors.toList());
-        return null;
+        List<Sentence> sentences = sentenceRepository.findAllByOriginalSentenceContaining(queryString);
+        if (sentences.isEmpty())
+        {
+            throw new NoSentencesFoundException("No sentences found");
+        }
+        return sentences.stream().map(SentenceDto::fromSentence).collect(Collectors.toList());
     }
 
     @Override
     @Transactional
     public List<WordDto> getWordlist(long id)
     {
-//        Sentence s = sentenceDao.getById(id);
-//        if (s == null)
-//        {
-//            throw new NoSentencesFoundException("Sentence with id " + id + " does not exist");
-//        }
-//        return s.getWordList().stream().map(WordDto::fromWord).collect(Collectors.toList());
-        return null;
+        Optional<Sentence> s = sentenceRepository.findById(id);
+        if (s.isEmpty())
+        {
+            throw new NoSentencesFoundException("Sentence with id " + id + " does not exist");
+        }
+        return s.get().getWordList().stream().map(WordDto::fromWord).collect(Collectors.toList());
     }
 
     @PostConstruct
     private void fillComplexQueryMethodsMap()
     {
-//        COMPLEX_QUERY_METHODS.putAll(Map.of(
-//                Set.of("lemma"), x -> sentenceDao.getByLemma((String) x[0], (Integer) x[1], (Integer) x[2]),
-//                Set.of("pos"), x -> sentenceDao.getByPos((String) x[0], (Integer) x[1], (Integer) x[2]),
-//                Set.of("gram"), x -> sentenceDao.getByGram((Map<String, String>) x[0], (Integer) x[1], (Integer) x[2]),
-//                Set.of("lemma", "pos"), x -> sentenceDao.getByLemmaPos(
-//                        (String) x[0], (String) x[1], (Integer) x[2], (Integer) x[3]
-//                ),
-//                Set.of("lemma", "gram"), x -> sentenceDao.getByLemmaGram(
-//                        (String) x[1], (Map<String, String>) x[0], (Integer) x[2], (Integer) x[3]
-//                ),
-//                Set.of("pos", "gram"), x -> sentenceDao.getByPosGram(
-//                        (String) x[1], (Map<String, String>) x[0], (Integer) x[2], (Integer) x[3]
-//                ),
-//                Set.of("lemma", "pos", "gram"), x -> sentenceDao.getByLemmaPosGram(
-//                        (String) x[1], (String) x[2], (Map<String, String>) x[0], (Integer) x[3], (Integer) x[4]
-//                )
-//        ));
+        COMPLEX_QUERY_METHODS.putAll(Map.of(
+                Set.of("lemma"), x -> sentenceRepository.findAllByLemma((String) x[0]),
+                Set.of("pos"), x -> sentenceRepository.findAllByPos((String) x[0]),
+                Set.of("gram"), x -> sentenceRepository.findAllByGram((String) x[0]),
+                Set.of("lemma", "pos"), x -> sentenceRepository.findAllByLemmaPos((String) x[0], (String) x[1]),
+                Set.of("lemma", "gram"), x -> sentenceRepository.findAllByLemmaGram((String) x[1], (String) x[0]),
+                Set.of("pos", "gram"), x -> sentenceRepository.findAllByPosGram((String) x[1], (String) x[0]),
+                Set.of("lemma", "pos", "gram"), x -> sentenceRepository.findAllByLemmaPosGram(
+                        (String) x[1], (String) x[2], (String) x[0]
+                )
+        ));
     }
 }
