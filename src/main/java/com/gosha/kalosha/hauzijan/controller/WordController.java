@@ -8,6 +8,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Map;
 
 import static com.gosha.kalosha.hauzijan.util.Util.decodeJsonToObject;
@@ -24,30 +25,39 @@ public class WordController
         this.wordService = wordService;
     }
 
-    @RequestMapping("{id}")
+    @GetMapping("{id}")
     public WordDto getById(@PathVariable long id)
     {
         return wordService.getById(id);
     }
 
-    @RequestMapping("save")
-    public ResponseEntity<Map<String, Long>> saveWord(@RequestParam(name = "word") String encodedWord)
+    @PostMapping
+    public ResponseEntity<Map<String, Long>> saveWord(@RequestBody Word word)
     {
-        Word word = decodeJsonToObject(encodedWord, Word.class);
         return new ResponseEntity<>(Map.of("id", wordService.save(word)), HttpStatus.CREATED);
     }
 
-    @RequestMapping("update")
-    public void updateWord(@RequestParam(name = "word") String encodedWord)
+    @PutMapping
+    @ResponseStatus(HttpStatus.OK)
+    public void updateWord(@RequestBody Word word)
     {
-
+        wordService.update(word);
     }
 
-    @RequestMapping("delete")
+    @DeleteMapping
     @ResponseStatus(HttpStatus.OK)
-    public void deleteWord(@RequestParam(name = "word") String encodedWord)
+    public void deleteWord(@RequestBody Word word)
     {
-        Word word = decodeJsonToObject(encodedWord, Word.class);
         wordService.delete(word);
+    }
+
+    /**
+     * @param id sentence's id
+     * @return list of words in the order they appear in the sentence
+     */
+    @GetMapping("wordlist/{id}")
+    public List<WordDto> getWordlist(@PathVariable long id)
+    {
+        return wordService.getWordlist(id);
     }
 }

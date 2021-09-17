@@ -34,3 +34,5 @@ public interface SentenceRepository extends JpaRepository<Sentence, Long>
     @Query("select s from Word w join w.sentences s where w.lemma = ?1 and w.pos = ?2 and w.grammar like ?3")
     List<Sentence> findAllByLemmaPosGram(String lemma, String pos, String grammar, Pageable pageable);
 }
+
+// select w from Sentence s join s.wordlist s where s.id = ?1
