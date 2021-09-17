@@ -1,10 +1,14 @@
 package com.gosha.kalosha.hauzijan.model;
 
+import com.gosha.kalosha.hauzijan.dto.WordDto;
 import lombok.Data;
 
 import javax.persistence.*;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Entity
 @Table(name = "wordforms")
@@ -42,4 +46,20 @@ public class Word
     @Enumerated
     @Column(columnDefinition = "int")
     private LanguageType lang;
+
+    public WordDto toDto()
+    {
+        Map<String, String> gram;
+        if (grammar.isEmpty())
+        {
+            gram = Map.of();
+        }
+        else
+        {
+            gram = Arrays.stream(grammar.split("\\|"))
+                    .map(s -> s.split("="))
+                    .collect(Collectors.toMap(e -> e[0], e -> e[1], (e1, e2) -> e1));
+        }
+        return new WordDto(word, lemma, pos, gram);
+    }
 }

@@ -38,9 +38,14 @@ public class ExceptionController
     }
 
     @ExceptionHandler
-    public ResponseEntity<Map<String, String>> handleIllegalArgumentException(IllegalArgumentException e)
+    public ResponseEntity<Map<String, String>> handleIllegalArgument(IllegalArgumentException e)
     {
         return new ResponseEntity<>(Map.of("error", e.getMessage()), HttpStatus.BAD_REQUEST);
     }
-}
 
+    @ExceptionHandler
+    public ResponseEntity<Map<String, String>> handleClassCast(ClassCastException e)
+    {
+        return new ResponseEntity<>(Map.of("error", "All values should be of type string"), HttpStatus.BAD_REQUEST);
+    }
+}

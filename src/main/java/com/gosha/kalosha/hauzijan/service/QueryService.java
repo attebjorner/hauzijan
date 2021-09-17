@@ -12,5 +12,7 @@ public interface QueryService
 
     List<SentenceDto> getBySimpleQuery(String queryString, Integer page, Integer maxResults);
 
+    List<SentenceDto> getBySimpleQuery(String[] queryStrings, Integer page, Integer maxResults);
+
     List<WordDto> getWordlist(long id);
 }

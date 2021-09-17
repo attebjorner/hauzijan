@@ -1,5 +1,6 @@
 package com.gosha.kalosha.hauzijan.model;
 
+import com.gosha.kalosha.hauzijan.dto.SentenceDto;
 import lombok.Data;
 
 import javax.persistence.*;
@@ -24,7 +25,7 @@ public class Sentence
             joinColumns = @JoinColumn(name = "sentence_id", nullable = false),
             inverseJoinColumns = @JoinColumn(name = "wordform_id", nullable = false)
     )
-    @OrderColumn
+    @OrderColumn(name = "wordlist_order")
     private List<Word> wordList;
 
     @Column(name = "original_sentence")
@@ -35,4 +36,9 @@ public class Sentence
     @Enumerated
     @Column(columnDefinition = "int")
     private LanguageType lang;
+
+    public SentenceDto toDto()
+    {
+        return new SentenceDto(id, originalSentence);
+    }
 }

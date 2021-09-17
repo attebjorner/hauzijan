@@ -8,10 +8,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.Map;
-
 @RestController
-@RequestMapping("${api_version}" + "/sentence")
+@RequestMapping("sentence")
 public class SentenceController
 {
     private final SentenceService sentenceService;

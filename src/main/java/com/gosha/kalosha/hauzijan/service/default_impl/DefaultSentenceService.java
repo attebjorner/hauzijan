@@ -21,7 +21,7 @@ public class DefaultSentenceService implements SentenceService
     @Override
     public SentenceDto getById(long id)
     {
-        return SentenceDto.fromSentence(sentenceRepository.getById(id));
+        return sentenceRepository.getById(id).toDto();
     }
 
     @Override

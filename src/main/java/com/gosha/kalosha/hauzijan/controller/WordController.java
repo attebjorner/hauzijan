@@ -13,7 +13,7 @@ import java.util.Map;
 import static com.gosha.kalosha.hauzijan.util.Util.decodeJsonToObject;
 
 @RestController
-@RequestMapping("${api_version}" + "/word")
+@RequestMapping("word")
 public class WordController
 {
     private final WordService wordService;

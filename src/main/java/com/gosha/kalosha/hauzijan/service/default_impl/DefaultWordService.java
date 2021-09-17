@@ -21,7 +21,7 @@ public class DefaultWordService implements WordService
     @Override
     public WordDto getById(long id)
     {
-        return WordDto.fromWord(wordRepository.getById(id));
+        return wordRepository.getById(id).toDto();
     }
 
     @Override
