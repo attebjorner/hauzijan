@@ -11,9 +11,9 @@ public interface WordService
 
     long save(Word word);
 
-    void update(Word word);
+    void update(long id, Word word);
 
-    void delete(Word word);
+    void delete(long id);
 
     List<WordDto> getWordlist(long id);
 }

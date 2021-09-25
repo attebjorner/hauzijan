@@ -2,14 +2,20 @@ package com.gosha.kalosha.hauzijan.model;
 
 import com.gosha.kalosha.hauzijan.dto.SentenceDto;
 import lombok.Data;
+import org.springframework.beans.BeanUtils;
+import org.springframework.beans.BeanWrapper;
+import org.springframework.beans.BeanWrapperImpl;
 
 import javax.persistence.*;
+import java.beans.PropertyDescriptor;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table(name = "sentences")
 @Data
-public class Sentence
+public class Sentence implements NonNullPropertiesCopyable
 {
     @Id
     @SequenceGenerator(name = "sentence_sequence", sequenceName = "sentence_sequence", allocationSize = 1)

@@ -13,6 +13,6 @@ public class ErrorController implements org.springframework.boot.web.servlet.err
     @RequestMapping("error")
     public ResponseEntity<Map<String, String>> handleUnknownError()
     {
-        return new ResponseEntity<>(Map.of("error", "Unknown error"), HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(Map.of("error", "Page not found"), HttpStatus.NOT_FOUND);
     }
 }

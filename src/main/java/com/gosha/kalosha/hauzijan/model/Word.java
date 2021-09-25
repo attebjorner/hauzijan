@@ -1,19 +1,22 @@
 package com.gosha.kalosha.hauzijan.model;
 
 import com.gosha.kalosha.hauzijan.dto.WordDto;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import org.springframework.beans.BeanUtils;
+import org.springframework.beans.BeanWrapper;
+import org.springframework.beans.BeanWrapperImpl;
 
 import javax.persistence.*;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
+import java.beans.PropertyDescriptor;
+import java.lang.reflect.Field;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Entity
 @Table(name = "wordforms")
 @Data
-public class Word
+public class Word implements NonNullPropertiesCopyable
 {
     @Id
     @SequenceGenerator(name = "wordform_sequence", sequenceName = "wordform_sequence", allocationSize = 1)

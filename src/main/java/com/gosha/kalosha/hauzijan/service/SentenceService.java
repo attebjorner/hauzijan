@@ -12,13 +12,17 @@ public interface SentenceService
 
     long save(Sentence sentence);
 
-    void update(Sentence sentence);
+    void update(long id, Sentence sentence);
 
-    void delete(Sentence sentence);
+    void delete(long id);
+
+    List<SentenceDto> getBySimpleQuery(String queryString);
 
     List<SentenceDto> getBySimpleQuery(String queryString, Integer page, Integer maxResults);
 
     List<SentenceDto> getBySimpleQuery(String[] queryStrings, Integer page, Integer maxResults);
+
+    List<SentenceDto> getByParameters(Map<String, Object> query);
 
     List<SentenceDto> getByParameters(Map<String, Object> query, Integer page, Integer maxResults);
 }

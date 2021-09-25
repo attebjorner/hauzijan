@@ -5,6 +5,8 @@ import com.gosha.kalosha.hauzijan.exception_handing.NoSentencesFoundException;
 import com.gosha.kalosha.hauzijan.model.Sentence;
 import com.gosha.kalosha.hauzijan.repository.SentenceRepository;
 import com.gosha.kalosha.hauzijan.service.SentenceService;
+import lombok.extern.log4j.Log4j2;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -13,10 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.PostConstruct;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -24,6 +23,7 @@ import static com.gosha.kalosha.hauzijan.model.ParameterType.*;
 import static com.gosha.kalosha.hauzijan.model.ParameterType.POS;
 
 @Service
+@Transactional
 public class DefaultSentenceService implements SentenceService
 {
     private final SentenceRepository sentenceRepository;
@@ -39,19 +39,35 @@ public class DefaultSentenceService implements SentenceService
     @Override
     public SentenceDto getById(long id)
     {
-        return sentenceRepository.getById(id).toDto();
+        Optional<Sentence> sentence = sentenceRepository.findById(id);
+        if (sentence.isEmpty())
+        {
+            throw new NoSentencesFoundException("Sentence with id " + id + " does not exist");
+        }
+        return sentence.get().toDto();
     }
 
     @Override
-    public void delete(Sentence sentence)
+    public void delete(long id)
     {
-        sentenceRepository.delete(sentence);
+        Optional<Sentence> sentence = sentenceRepository.findById(id);
+        if (sentence.isEmpty())
+        {
+            throw new NoSentencesFoundException("Sentence with id " + id + " does not exist");
+        }
+        sentenceRepository.delete(sentence.get());
     }
 
     @Override
-    public void update(Sentence sentence)
+    public void update(long id, Sentence sentence)
     {
-        sentenceRepository.save(sentence);
+        Optional<Sentence> underUpdate = sentenceRepository.findById(id);
+        if (underUpdate.isEmpty())
+        {
+            throw new NoSentencesFoundException("Sentence with id " + id + " does not exist");
+        }
+        underUpdate.get().copyNonNullProperties(sentence);
+        sentenceRepository.save(underUpdate.get());
     }
 
     @Override
@@ -61,13 +77,12 @@ public class DefaultSentenceService implements SentenceService
     }
 
     @Override
-    @Transactional
     public List<SentenceDto> getBySimpleQuery(String queryString, Integer page, Integer maxResults)
     {
-        List<Sentence> sentences = sentenceRepository.findAllByOriginalSentenceContaining(
+        List<Sentence> sentences = sentenceRepository.findDistinctByOriginalSentenceContaining(
                 queryString, PageRequest.of(
                         page == null ? 0 : page,
-                        maxResults == null ? 10 : maxResults,
+                        maxResults == null ? 20 : maxResults,
                         Sort.by("id")
                 )
         );
@@ -79,7 +94,12 @@ public class DefaultSentenceService implements SentenceService
     }
 
     @Override
-    @Transactional
+    public List<SentenceDto> getBySimpleQuery(String queryString)
+    {
+        return getBySimpleQuery(queryString, null, null);
+    }
+
+    @Override
     public List<SentenceDto> getBySimpleQuery(String[] queryStrings, Integer page, Integer maxResults)
     {
         String queryString = String.join("%", queryStrings);
@@ -87,7 +107,11 @@ public class DefaultSentenceService implements SentenceService
     }
 
     @Override
-    @Transactional
+    public List<SentenceDto> getByParameters(Map<String, Object> query)
+    {
+        return getByParameters(query, null, null);
+    }
+    @Override
     public List<SentenceDto> getByParameters(Map<String, Object> query, Integer page, Integer maxResults)
     {
         var queryMethod = COMPLEX_QUERY_METHODS.get(query.keySet());
@@ -96,7 +120,7 @@ public class DefaultSentenceService implements SentenceService
             throw new IllegalArgumentException("Wrong query parameters");
         }
         var pageProperties = PageRequest.of(
-                page == null ? 0 : page, maxResults == null ? 10 : maxResults, Sort.by("id")
+                page == null ? 0 : page, maxResults == null ? 20 : maxResults
         );
         query.put(PAGE, pageProperties);
         if (query.containsKey(GRAM))
@@ -105,12 +129,10 @@ public class DefaultSentenceService implements SentenceService
             {
                 throw new IllegalArgumentException("Grammar should be presented as a key-value structure");
             }
-            String grammar = "%"
-                    + ((Map<String, String>) query.get(GRAM)).entrySet()
+            String grammar = ((Map<String, String>) query.get(GRAM)).entrySet()
                     .stream()
                     .map(e -> e.getKey() + "=" + e.getValue())
-                    .collect(Collectors.joining("%"))
-                    + "%";
+                    .collect(Collectors.joining("%"));
             query.put(GRAM, grammar);
         }
         List<Sentence> sentences = queryMethod.apply(query);

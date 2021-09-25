@@ -8,13 +8,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 import java.util.Map;
 
-import static com.gosha.kalosha.hauzijan.util.Util.decodeJsonToObject;
-
 @RestController
-@RequestMapping("word")
+@RequestMapping("${api.rest.endpoint}" + "word")
 public class WordController
 {
     private final WordService wordService;
@@ -37,27 +34,17 @@ public class WordController
         return new ResponseEntity<>(Map.of("id", wordService.save(word)), HttpStatus.CREATED);
     }
 
-    @PutMapping
+    @PutMapping("{id}")
     @ResponseStatus(HttpStatus.OK)
-    public void updateWord(@RequestBody Word word)
+    public void updateWord(@PathVariable long id, @RequestBody Word word)
     {
-        wordService.update(word);
+        wordService.update(id, word);
     }
 
-    @DeleteMapping
+    @DeleteMapping("{id}")
     @ResponseStatus(HttpStatus.OK)
-    public void deleteWord(@RequestBody Word word)
+    public void deleteWord(@PathVariable long id)
     {
-        wordService.delete(word);
-    }
-
-    /**
-     * @param id sentence's id
-     * @return list of words in the order they appear in the sentence
-     */
-    @GetMapping("wordlist/{id}")
-    public List<WordDto> getWordlist(@PathVariable long id)
-    {
-        return wordService.getWordlist(id);
+        wordService.delete(id);
     }
 }
