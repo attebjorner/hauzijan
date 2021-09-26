@@ -81,7 +81,7 @@ public class DefaultSentenceService implements SentenceService
     {
         List<Sentence> sentences = sentenceRepository.findDistinctByOriginalSentenceContaining(
                 queryString, PageRequest.of(
-                        page == null ? 0 : page,
+                        page == null ? 0 : page - 1,
                         maxResults == null ? 20 : maxResults,
                         Sort.by("id")
                 )
@@ -94,23 +94,17 @@ public class DefaultSentenceService implements SentenceService
     }
 
     @Override
-    public List<SentenceDto> getBySimpleQuery(String queryString)
+    public List<SentenceDto> getBySimpleQuery(String queryString, int page)
     {
-        return getBySimpleQuery(queryString, null, null);
+        return getBySimpleQuery(queryString, page, null);
     }
 
     @Override
-    public List<SentenceDto> getBySimpleQuery(String[] queryStrings, Integer page, Integer maxResults)
+    public List<SentenceDto> getByParameters(Map<String, Object> query, int page)
     {
-        String queryString = String.join("%", queryStrings);
-        return getBySimpleQuery(queryString, page, maxResults);
+        return getByParameters(query, page, null);
     }
 
-    @Override
-    public List<SentenceDto> getByParameters(Map<String, Object> query)
-    {
-        return getByParameters(query, null, null);
-    }
     @Override
     public List<SentenceDto> getByParameters(Map<String, Object> query, Integer page, Integer maxResults)
     {
@@ -120,9 +114,10 @@ public class DefaultSentenceService implements SentenceService
             throw new IllegalArgumentException("Wrong query parameters");
         }
         var pageProperties = PageRequest.of(
-                page == null ? 0 : page, maxResults == null ? 20 : maxResults
+                page == null ? 0 : page - 1, maxResults == null ? 20 : maxResults
         );
-        query.put(PAGE, pageProperties);
+        var fullQuery = new HashMap<>(query);
+        fullQuery.put(PAGE, pageProperties);
         if (query.containsKey(GRAM))
         {
             if (!(query.get(GRAM) instanceof Map))
@@ -133,9 +128,9 @@ public class DefaultSentenceService implements SentenceService
                     .stream()
                     .map(e -> e.getKey() + "=" + e.getValue())
                     .collect(Collectors.joining("%"));
-            query.put(GRAM, grammar);
+            fullQuery.put(GRAM, grammar);
         }
-        List<Sentence> sentences = queryMethod.apply(query);
+        List<Sentence> sentences = queryMethod.apply(fullQuery);
         if (sentences.isEmpty())
         {
             throw new NoSentencesFoundException("No sentences found");

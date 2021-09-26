@@ -16,13 +16,11 @@ public interface SentenceService
 
     void delete(long id);
 
-    List<SentenceDto> getBySimpleQuery(String queryString);
+    List<SentenceDto> getBySimpleQuery(String queryString, int page);
 
     List<SentenceDto> getBySimpleQuery(String queryString, Integer page, Integer maxResults);
 
-    List<SentenceDto> getBySimpleQuery(String[] queryStrings, Integer page, Integer maxResults);
-
-    List<SentenceDto> getByParameters(Map<String, Object> query);
+    List<SentenceDto> getByParameters(Map<String, Object> query, int page);
 
     List<SentenceDto> getByParameters(Map<String, Object> query, Integer page, Integer maxResults);
 }

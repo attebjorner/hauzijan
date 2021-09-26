@@ -1,15 +1,11 @@
 package com.gosha.kalosha.hauzijan.view.component;
 
-import com.vaadin.flow.component.AbstractField;
-import com.vaadin.flow.component.HasValue;
 import com.vaadin.flow.component.KeyNotifier;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.checkbox.CheckboxGroup;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
-import com.vaadin.flow.data.selection.MultiSelectionEvent;
-import com.vaadin.flow.data.selection.MultiSelectionListener;
 import com.vaadin.flow.spring.annotation.SpringComponent;
 import com.vaadin.flow.spring.annotation.UIScope;
 import lombok.Setter;
@@ -23,15 +19,12 @@ import static com.gosha.kalosha.hauzijan.model.ParameterType.*;
 public class ComplexQueryCreator extends VerticalLayout implements KeyNotifier
 {
     private final String SHOW_GRAMMAR = "Set up grammar";
-
     private final String HIDE_GRAMMAR = "Hide grammar";
 
     private final TextField tfLemma = new TextField("Lemma");
-
     private final TextField tfPos = new TextField("Pos");
 
     private final Button btnSearch = new Button("Search", VaadinIcon.SEARCH.create());
-
     private final Button btnGrammar = new Button(SHOW_GRAMMAR, VaadinIcon.ASTERISK.create());
 
     private final VerticalLayout vlGrammar = new VerticalLayout();
@@ -41,12 +34,10 @@ public class ComplexQueryCreator extends VerticalLayout implements KeyNotifier
     private final Map<String, String> selectedGrammar = new HashMap<>();
 
     @Setter
-    private ChangeHandler changeHandler;
+    private ChangeHandler<Map<String, Object>> changeHandler;
 
-    public interface ChangeHandler
-    {
-        void onQuery(Map<String, Object> query);
-    }
+    @Setter
+    private ErrorHandler errorHandler;
 
     {
         gramValues = new LinkedHashMap<>();
@@ -77,6 +68,8 @@ public class ComplexQueryCreator extends VerticalLayout implements KeyNotifier
         this.add(tfLemma, tfPos, btnGrammar, vlGrammar, btnSearch);
         vlGrammar.setVisible(false);
         vlGrammar.setSpacing(false);
+        vlGrammar.setMargin(false);
+        vlGrammar.setPadding(false);
         btnSearch.addClickListener(event -> createQuery());
         btnGrammar.addClickListener(event -> manageGrammarWindow());
     }
@@ -92,23 +85,13 @@ public class ComplexQueryCreator extends VerticalLayout implements KeyNotifier
         {
             query.put(POS, tfPos.getValue());
         }
-//        Map<String, String> grammar = new HashMap<>();
-//        vlGrammar.getChildren().forEach(component ->
-//        {
-//            var checkboxGroup = (CheckboxGroup<String>) component;
-//            checkboxGroup.getValue().stream()
-//                    .findFirst()
-//                    .ifPresent(selectedValue ->
-//                    {
-//                        grammar.put(checkboxGroup.getLabel(), selectedValue);
-//                    });
-//        });
         if (!selectedGrammar.isEmpty())
         {
-            query.put(GRAM, gramValues);
+            query.put(GRAM, selectedGrammar);
         }
         if (query.isEmpty())
         {
+            errorHandler.onError("The query is empty");
             return;
         }
         changeHandler.onQuery(query);
