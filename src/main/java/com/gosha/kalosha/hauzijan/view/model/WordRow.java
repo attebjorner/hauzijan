@@ -11,8 +11,11 @@ import java.util.stream.Collectors;
 public class WordRow
 {
     private String word;
+
     private String lemma;
+
     private String pos;
+
     private String grammar;
 
     public static WordRow fromDto(WordDto word)

@@ -49,20 +49,4 @@ public class Word implements NonNullPropertiesCopyable
     @Enumerated
     @Column(columnDefinition = "int")
     private LanguageType lang;
-
-    public WordDto toDto()
-    {
-        Map<String, String> gram;
-        if (grammar.isEmpty())
-        {
-            gram = Map.of();
-        }
-        else
-        {
-            gram = Arrays.stream(grammar.split("\\|"))
-                    .map(s -> s.split("="))
-                    .collect(Collectors.toMap(e -> e[0], e -> e[1], (e1, e2) -> e1));
-        }
-        return new WordDto(word, lemma, pos, gram);
-    }
 }

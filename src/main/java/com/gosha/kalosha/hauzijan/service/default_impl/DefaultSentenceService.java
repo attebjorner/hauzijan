@@ -44,7 +44,7 @@ public class DefaultSentenceService implements SentenceService
         {
             throw new NoSentencesFoundException("Sentence with id " + id + " does not exist");
         }
-        return sentence.get().toDto();
+        return SentenceDto.fromSentence(sentence.get());
     }
 
     @Override
@@ -90,7 +90,7 @@ public class DefaultSentenceService implements SentenceService
         {
             throw new NoSentencesFoundException("No sentences found");
         }
-        return sentences.stream().map(Sentence::toDto).toList();
+        return sentences.stream().map(SentenceDto::fromSentence).toList();
     }
 
     @Override
@@ -135,7 +135,7 @@ public class DefaultSentenceService implements SentenceService
         {
             throw new NoSentencesFoundException("No sentences found");
         }
-        return sentences.stream().map(Sentence::toDto).toList();
+        return sentences.stream().map(SentenceDto::fromSentence).toList();
     }
 
     @PostConstruct

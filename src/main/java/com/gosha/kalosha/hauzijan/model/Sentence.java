@@ -42,9 +42,4 @@ public class Sentence implements NonNullPropertiesCopyable
     @Enumerated
     @Column(columnDefinition = "int")
     private LanguageType lang;
-
-    public SentenceDto toDto()
-    {
-        return new SentenceDto(id, originalSentence);
-    }
 }

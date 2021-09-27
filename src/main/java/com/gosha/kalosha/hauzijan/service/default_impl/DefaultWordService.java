@@ -33,7 +33,7 @@ public class DefaultWordService implements WordService
         {
             throw new NoWordsFoundException("Word with id " + id + " does not exist");
         }
-        return word.get().toDto();
+        return WordDto.fromWord(word.get());
     }
 
     @Override
@@ -77,6 +77,6 @@ public class DefaultWordService implements WordService
         {
             throw new NoSentencesFoundException("Sentence with id " + id + " does not exist");
         }
-        return wordList.stream().map(Word::toDto).toList();
+        return wordList.stream().map(WordDto::fromWord).toList();
     }
 }
