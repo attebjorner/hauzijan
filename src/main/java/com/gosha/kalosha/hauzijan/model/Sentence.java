@@ -1,7 +1,9 @@
 package com.gosha.kalosha.hauzijan.model;
 
 import com.gosha.kalosha.hauzijan.dto.SentenceDto;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.BeanWrapper;
 import org.springframework.beans.BeanWrapperImpl;
@@ -14,7 +16,7 @@ import java.util.Set;
 
 @Entity
 @Table(name = "sentences")
-@Data
+@Data @NoArgsConstructor @AllArgsConstructor
 public class Sentence implements NonNullPropertiesCopyable
 {
     @Id

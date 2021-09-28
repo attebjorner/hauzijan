@@ -4,14 +4,13 @@ import com.gosha.kalosha.hauzijan.dto.SentenceDto;
 import com.gosha.kalosha.hauzijan.dto.WordDto;
 import com.gosha.kalosha.hauzijan.service.SentenceService;
 import com.gosha.kalosha.hauzijan.service.WordService;
+import com.gosha.kalosha.hauzijan.util.QueryDecoder;
 import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Map;
-
-import static com.gosha.kalosha.hauzijan.util.Util.decodeJsonToObject;
 
 @RestController
 @RequestMapping("${api.rest.endpoint}" + "query")
@@ -21,11 +20,14 @@ public class QueryController
 
     private final SentenceService sentenceService;
 
+    private final QueryDecoder decoder;
+
     @Autowired
-    public QueryController(WordService wordService, SentenceService sentenceService)
+    public QueryController(WordService wordService, SentenceService sentenceService, QueryDecoder decoder)
     {
         this.wordService = wordService;
         this.sentenceService = sentenceService;
+        this.decoder = decoder;
     }
 
     /**
@@ -54,7 +56,7 @@ public class QueryController
                                               @RequestParam(required = false) Integer page,
                                               @RequestParam(required = false, name = "max_results") Integer maxResults)
     {
-        Map<String, Object> query = (Map<String, Object>) decodeJsonToObject(encoded, Map.class);
+        Map<String, Object> query = (Map<String, Object>) decoder.decodeJsonToObject(encoded, Map.class);
         return sentenceService.getByParameters(query, page, maxResults);
     }
 

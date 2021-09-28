@@ -3,6 +3,7 @@ package com.gosha.kalosha.hauzijan.model;
 import com.gosha.kalosha.hauzijan.dto.WordDto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.BeanWrapper;
 import org.springframework.beans.BeanWrapperImpl;
@@ -15,7 +16,7 @@ import java.util.stream.Collectors;
 
 @Entity
 @Table(name = "wordforms")
-@Data
+@Data @NoArgsConstructor
 public class Word implements NonNullPropertiesCopyable
 {
     @Id
@@ -49,4 +50,16 @@ public class Word implements NonNullPropertiesCopyable
     @Enumerated
     @Column(columnDefinition = "int")
     private LanguageType lang;
+
+    public Word(String word, String lemma, String pos, String grammar,
+                String translation, Set<Sentence> sentences, LanguageType lang)
+    {
+        this.word = word;
+        this.lemma = lemma;
+        this.pos = pos;
+        this.grammar = grammar;
+        this.translation = translation;
+        this.sentences = sentences;
+        this.lang = lang;
+    }
 }
