@@ -116,6 +116,21 @@ public class QueryControllerTest
                 .andExpect(jsonPath("$.error").value("Grammar should be presented as a key-value structure"));
     }
 
+    @ParameterizedTest
+    @CsvSource(value = {
+            "\"gram\":\"value\"}",
+            "{\"lemma\"\"כלב\",\"pos\":\"NOUN\",\"gram\":\"value\"}",
+            "{\"lemma\":\"כלב\",\"gram\":\"value\""
+    }, delimiter = ' ')
+    public void willReturn400JsonIsInvalid(String jsonRequest) throws Exception
+    {
+        var encoded = new String(Base64.getEncoder().encode(jsonRequest.getBytes(StandardCharsets.UTF_8)));
+        mockMvc.perform(get("/api/v2/query/complex").param("encoded", encoded))
+                .andExpect(status().isBadRequest())
+                .andExpect(content().contentType(APPLICATION_JSON))
+                .andExpect(jsonPath("$.error").value("Invalid JSON"));
+    }
+
     @Test
     public void willReturn400WhenComplexQueryNotFoundSentences() throws Exception
     {

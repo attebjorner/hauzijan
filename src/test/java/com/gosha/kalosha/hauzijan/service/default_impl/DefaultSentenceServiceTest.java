@@ -53,7 +53,7 @@ class DefaultSentenceServiceTest
     void setUp()
     {
         underTest = new DefaultSentenceService(sentenceRepository);
-        ReflectionTestUtils.invokeMethod(underTest, DefaultSentenceService.class, "fillComplexQueryMethodsMap");
+        ReflectionTestUtils.invokeMethod(underTest, DefaultSentenceService.class, "init");
     }
 
     @Test

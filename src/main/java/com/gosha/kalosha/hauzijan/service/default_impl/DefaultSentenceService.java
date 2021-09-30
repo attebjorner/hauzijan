@@ -4,23 +4,19 @@ import com.gosha.kalosha.hauzijan.dto.SentenceDto;
 import com.gosha.kalosha.hauzijan.exception_handing.NoSentencesFoundException;
 import com.gosha.kalosha.hauzijan.model.Sentence;
 import com.gosha.kalosha.hauzijan.repository.SentenceRepository;
+import com.gosha.kalosha.hauzijan.service.SentenceQueryFunction;
 import com.gosha.kalosha.hauzijan.service.SentenceService;
-import lombok.extern.log4j.Log4j2;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.PostConstruct;
 import java.util.*;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import static com.gosha.kalosha.hauzijan.model.ParameterType.*;
-import static com.gosha.kalosha.hauzijan.model.ParameterType.POS;
 
 @Service
 @Transactional
@@ -28,12 +24,28 @@ public class DefaultSentenceService implements SentenceService
 {
     private final SentenceRepository sentenceRepository;
 
-    private static final Map<Set<String>, Function<Map<String, Object>, List<Sentence>>> COMPLEX_QUERY_METHODS = new HashMap<>();
+    private final Map<Set<String>, SentenceQueryFunction> COMPLEX_QUERY_METHODS = new HashMap<>();
 
     @Autowired
     public DefaultSentenceService(SentenceRepository sentenceRepository)
     {
         this.sentenceRepository = sentenceRepository;
+    }
+
+    @PostConstruct
+    private void init()
+    {
+        COMPLEX_QUERY_METHODS.putAll(Map.of(
+                Set.of(LEMMA), (q, page) -> sentenceRepository.findAllByLemma(q.get(LEMMA), page),
+                Set.of(POS), (q, page) -> sentenceRepository.findAllByPos(q.get(POS), page),
+                Set.of(GRAM), (q, page) -> sentenceRepository.findAllByGram(q.get(GRAM), page),
+                Set.of(LEMMA, POS), (q, page) -> sentenceRepository.findAllByLemmaPos(q.get(LEMMA), q.get(POS), page),
+                Set.of(LEMMA, GRAM), (q, page) -> sentenceRepository.findAllByLemmaGram(q.get(LEMMA), q.get(GRAM), page),
+                Set.of(POS, GRAM), (q, page) -> sentenceRepository.findAllByPosGram(q.get(POS), q.get(GRAM), page),
+                Set.of(LEMMA, POS, GRAM), (q, page) -> sentenceRepository.findAllByLemmaPosGram(
+                        q.get(LEMMA), q.get(POS), q.get(GRAM), page
+                )
+        ));
     }
 
     @Override
@@ -77,6 +89,12 @@ public class DefaultSentenceService implements SentenceService
     }
 
     @Override
+    public List<SentenceDto> getBySimpleQuery(String queryString, int page)
+    {
+        return getBySimpleQuery(queryString, page, null);
+    }
+
+    @Override
     public List<SentenceDto> getBySimpleQuery(String queryString, Integer page, Integer maxResults)
     {
         List<Sentence> sentences = sentenceRepository.findDistinctByOriginalSentenceContaining(
@@ -91,12 +109,6 @@ public class DefaultSentenceService implements SentenceService
             throw new NoSentencesFoundException("No sentences found");
         }
         return sentences.stream().map(SentenceDto::fromSentence).toList();
-    }
-
-    @Override
-    public List<SentenceDto> getBySimpleQuery(String queryString, int page)
-    {
-        return getBySimpleQuery(queryString, page, null);
     }
 
     @Override
@@ -116,8 +128,9 @@ public class DefaultSentenceService implements SentenceService
         var pageProperties = PageRequest.of(
                 page == null ? 0 : page - 1, maxResults == null ? 20 : maxResults
         );
-        var fullQuery = new HashMap<>(query);
-        fullQuery.put(PAGE, pageProperties);
+        var fullQuery = new HashMap<String, String>();
+        fullQuery.put(LEMMA, (String) query.getOrDefault(LEMMA, ""));
+        fullQuery.put(POS, (String) query.getOrDefault(POS, ""));
         if (query.containsKey(GRAM))
         {
             if (!(query.get(GRAM) instanceof Map))
@@ -131,33 +144,11 @@ public class DefaultSentenceService implements SentenceService
                     .collect(Collectors.joining("%"));
             fullQuery.put(GRAM, grammar);
         }
-        List<Sentence> sentences = queryMethod.apply(fullQuery);
+        List<Sentence> sentences = queryMethod.find(fullQuery, pageProperties);
         if (sentences.isEmpty())
         {
             throw new NoSentencesFoundException("No sentences found");
         }
         return sentences.stream().map(SentenceDto::fromSentence).toList();
-    }
-
-    @PostConstruct
-    private void fillComplexQueryMethodsMap()
-    {
-        COMPLEX_QUERY_METHODS.putAll(Map.of(
-                Set.of(LEMMA), x -> sentenceRepository.findAllByLemma((String) x.get(LEMMA), (Pageable) x.get(PAGE)),
-                Set.of(POS), x -> sentenceRepository.findAllByPos((String) x.get(POS), (Pageable) x.get(PAGE)),
-                Set.of(GRAM), x -> sentenceRepository.findAllByGram((String) x.get(GRAM), (Pageable) x.get(PAGE)),
-                Set.of(LEMMA, POS), x -> sentenceRepository.findAllByLemmaPos(
-                        (String) x.get(LEMMA), (String) x.get(POS), (Pageable) x.get(PAGE)
-                ),
-                Set.of(LEMMA, GRAM), x -> sentenceRepository.findAllByLemmaGram(
-                        (String) x.get(LEMMA), (String) x.get(GRAM), (Pageable) x.get(PAGE)
-                ),
-                Set.of(POS, GRAM), x -> sentenceRepository.findAllByPosGram(
-                        (String) x.get(POS), (String) x.get(GRAM), (Pageable) x.get(PAGE)
-                ),
-                Set.of(LEMMA, POS, GRAM), x -> sentenceRepository.findAllByLemmaPosGram(
-                        (String) x.get(LEMMA), (String) x.get(POS), (String) x.get(GRAM), (Pageable) x.get(PAGE)
-                )
-        ));
     }
 }

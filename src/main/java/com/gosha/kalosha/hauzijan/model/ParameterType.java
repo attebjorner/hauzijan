@@ -7,6 +7,4 @@ public final class ParameterType
     public static final String POS = "pos";
 
     public static final String GRAM = "gram";
-
-    public static final String PAGE = "page";
 }

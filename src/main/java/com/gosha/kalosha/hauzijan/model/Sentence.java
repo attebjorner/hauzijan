@@ -44,4 +44,12 @@ public class Sentence implements NonNullPropertiesCopyable
     @Enumerated
     @Column(columnDefinition = "int")
     private LanguageType lang;
+
+    public Sentence(List<Word> wordList, String originalSentence, String translation, LanguageType lang)
+    {
+        this.wordList = wordList;
+        this.originalSentence = originalSentence;
+        this.translation = translation;
+        this.lang = lang;
+    }
 }
