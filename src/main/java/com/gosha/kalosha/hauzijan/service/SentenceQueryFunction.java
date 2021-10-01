@@ -1,6 +1,6 @@
 package com.gosha.kalosha.hauzijan.service;
 
-import com.gosha.kalosha.hauzijan.model.Sentence;
+import com.gosha.kalosha.hauzijan.model.entity.Sentence;
 import org.springframework.data.domain.Pageable;
 
 import java.util.List;

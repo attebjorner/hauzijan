@@ -1,4 +1,4 @@
-package com.gosha.kalosha.hauzijan.model;
+package com.gosha.kalosha.hauzijan.util;
 
 public final class ParameterType
 {

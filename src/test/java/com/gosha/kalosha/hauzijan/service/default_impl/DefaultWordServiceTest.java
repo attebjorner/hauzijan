@@ -1,18 +1,16 @@
 package com.gosha.kalosha.hauzijan.service.default_impl;
 
-import com.gosha.kalosha.hauzijan.dto.WordDto;
+import com.gosha.kalosha.hauzijan.model.dto.WordDto;
 import com.gosha.kalosha.hauzijan.exception_handing.NoSentencesFoundException;
-import com.gosha.kalosha.hauzijan.exception_handing.NoWordsFoundException;
-import com.gosha.kalosha.hauzijan.model.LanguageType;
-import com.gosha.kalosha.hauzijan.model.Word;
+import com.gosha.kalosha.hauzijan.model.enums.LanguageType;
+import com.gosha.kalosha.hauzijan.model.entity.Word;
+import com.gosha.kalosha.hauzijan.model.mapper.WordMapper;
 import com.gosha.kalosha.hauzijan.repository.WordRepository;
 import com.gosha.kalosha.hauzijan.service.WordService;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.HashSet;
@@ -53,7 +51,7 @@ class DefaultWordServiceTest
         List<WordDto> expected = underTest.getWordlist(id);
         // then
         verify(wordRepository).getWordListBySentenceId(id);
-        assertThat(expected).isEqualTo(List.of(WordDto.fromWord(word)));
+        assertThat(expected).isEqualTo(List.of(WordMapper.toDto(word)));
     }
 
     @Test

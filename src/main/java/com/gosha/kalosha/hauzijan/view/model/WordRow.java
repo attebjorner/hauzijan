@@ -1,6 +1,6 @@
 package com.gosha.kalosha.hauzijan.view.model;
 
-import com.gosha.kalosha.hauzijan.dto.WordDto;
+import com.gosha.kalosha.hauzijan.model.dto.WordDto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

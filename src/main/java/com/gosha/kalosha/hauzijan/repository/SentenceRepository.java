@@ -1,6 +1,6 @@
 package com.gosha.kalosha.hauzijan.repository;
 
-import com.gosha.kalosha.hauzijan.model.Sentence;
+import com.gosha.kalosha.hauzijan.model.entity.Sentence;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;

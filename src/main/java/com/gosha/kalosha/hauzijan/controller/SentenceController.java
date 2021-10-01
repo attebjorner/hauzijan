@@ -1,7 +1,7 @@
 package com.gosha.kalosha.hauzijan.controller;
 
-import com.gosha.kalosha.hauzijan.dto.SentenceDto;
-import com.gosha.kalosha.hauzijan.model.Sentence;
+import com.gosha.kalosha.hauzijan.model.dto.SentenceDto;
+import com.gosha.kalosha.hauzijan.model.entity.Sentence;
 import com.gosha.kalosha.hauzijan.service.SentenceService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -34,7 +34,7 @@ public class SentenceController
         return new ResponseEntity<>(Map.of("id", sentenceService.save(sentence)), HttpStatus.CREATED);
     }
 
-    @PutMapping("{id}")
+    @PatchMapping("{id}")
     @ResponseStatus(HttpStatus.OK)
     public void updateWord(@PathVariable long id, @RequestBody Sentence sentence)
     {

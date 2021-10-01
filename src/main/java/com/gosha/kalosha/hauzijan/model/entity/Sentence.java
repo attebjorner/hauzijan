@@ -1,18 +1,13 @@
-package com.gosha.kalosha.hauzijan.model;
+package com.gosha.kalosha.hauzijan.model.entity;
 
-import com.gosha.kalosha.hauzijan.dto.SentenceDto;
+import com.gosha.kalosha.hauzijan.model.enums.LanguageType;
+import com.gosha.kalosha.hauzijan.model.NonNullPropertiesCopyable;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.beans.BeanUtils;
-import org.springframework.beans.BeanWrapper;
-import org.springframework.beans.BeanWrapperImpl;
 
 import javax.persistence.*;
-import java.beans.PropertyDescriptor;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 @Entity
 @Table(name = "sentences")

@@ -1,7 +1,7 @@
 package com.gosha.kalosha.hauzijan.controller;
 
-import com.gosha.kalosha.hauzijan.dto.WordDto;
-import com.gosha.kalosha.hauzijan.model.Word;
+import com.gosha.kalosha.hauzijan.model.dto.WordDto;
+import com.gosha.kalosha.hauzijan.model.entity.Word;
 import com.gosha.kalosha.hauzijan.service.WordService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -34,7 +34,7 @@ public class WordController
         return new ResponseEntity<>(Map.of("id", wordService.save(word)), HttpStatus.CREATED);
     }
 
-    @PutMapping("{id}")
+    @PatchMapping("{id}")
     @ResponseStatus(HttpStatus.OK)
     public void updateWord(@PathVariable long id, @RequestBody Word word)
     {

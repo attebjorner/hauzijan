@@ -1,8 +1,10 @@
 package com.gosha.kalosha.hauzijan.service.default_impl;
 
-import com.gosha.kalosha.hauzijan.dto.SentenceDto;
+import com.gosha.kalosha.hauzijan.exception_handing.IllegalParametersException;
+import com.gosha.kalosha.hauzijan.model.dto.SentenceDto;
 import com.gosha.kalosha.hauzijan.exception_handing.NoSentencesFoundException;
-import com.gosha.kalosha.hauzijan.model.Sentence;
+import com.gosha.kalosha.hauzijan.model.entity.Sentence;
+import com.gosha.kalosha.hauzijan.model.mapper.SentenceMapper;
 import com.gosha.kalosha.hauzijan.repository.SentenceRepository;
 import com.gosha.kalosha.hauzijan.service.SentenceQueryFunction;
 import com.gosha.kalosha.hauzijan.service.SentenceService;
@@ -16,7 +18,7 @@ import javax.annotation.PostConstruct;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static com.gosha.kalosha.hauzijan.model.ParameterType.*;
+import static com.gosha.kalosha.hauzijan.util.ParameterType.*;
 
 @Service
 @Transactional
@@ -56,7 +58,7 @@ public class DefaultSentenceService implements SentenceService
         {
             throw new NoSentencesFoundException("Sentence with id " + id + " does not exist");
         }
-        return SentenceDto.fromSentence(sentence.get());
+        return SentenceMapper.toDto(sentence.get());
     }
 
     @Override
@@ -108,7 +110,7 @@ public class DefaultSentenceService implements SentenceService
         {
             throw new NoSentencesFoundException("No sentences found");
         }
-        return sentences.stream().map(SentenceDto::fromSentence).toList();
+        return sentences.stream().map(SentenceMapper::toDto).toList();
     }
 
     @Override
@@ -123,19 +125,26 @@ public class DefaultSentenceService implements SentenceService
         var queryMethod = COMPLEX_QUERY_METHODS.get(query.keySet());
         if (queryMethod == null)
         {
-            throw new IllegalArgumentException("Wrong query parameters");
+            throw new IllegalParametersException("Wrong query parameters");
         }
         var pageProperties = PageRequest.of(
                 page == null ? 0 : page - 1, maxResults == null ? 20 : maxResults
         );
         var fullQuery = new HashMap<String, String>();
-        fullQuery.put(LEMMA, (String) query.getOrDefault(LEMMA, ""));
-        fullQuery.put(POS, (String) query.getOrDefault(POS, ""));
+        try
+        {
+            fullQuery.put(LEMMA, (String) query.getOrDefault(LEMMA, ""));
+            fullQuery.put(POS, (String) query.getOrDefault(POS, ""));
+        }
+        catch (ClassCastException e)
+        {
+            throw new IllegalParametersException("All values should be of type string");
+        }
         if (query.containsKey(GRAM))
         {
             if (!(query.get(GRAM) instanceof Map))
             {
-                throw new IllegalArgumentException("Grammar should be presented as a key-value structure");
+                throw new IllegalParametersException("Grammar should be presented as a key-value structure");
             }
             String grammar = ((Map<String, String>) query.get(GRAM)).entrySet()
                     .stream()
@@ -149,6 +158,6 @@ public class DefaultSentenceService implements SentenceService
         {
             throw new NoSentencesFoundException("No sentences found");
         }
-        return sentences.stream().map(SentenceDto::fromSentence).toList();
+        return sentences.stream().map(SentenceMapper::toDto).toList();
     }
 }

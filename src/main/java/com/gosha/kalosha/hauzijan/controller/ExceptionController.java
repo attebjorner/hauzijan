@@ -1,5 +1,6 @@
 package com.gosha.kalosha.hauzijan.controller;
 
+import com.gosha.kalosha.hauzijan.exception_handing.IllegalParametersException;
 import com.gosha.kalosha.hauzijan.exception_handing.NoSentencesFoundException;
 import com.gosha.kalosha.hauzijan.exception_handing.NoWordsFoundException;
 import org.springframework.http.HttpStatus;
@@ -38,14 +39,9 @@ public class ExceptionController
     }
 
     @ExceptionHandler
-    public ResponseEntity<Map<String, String>> handleIllegalArgument(IllegalArgumentException e)
+    public ResponseEntity<Map<String, String>> handleIllegalParameters(IllegalParametersException e)
     {
+        e.printStackTrace();
         return new ResponseEntity<>(Map.of("error", e.getMessage()), HttpStatus.BAD_REQUEST);
-    }
-
-    @ExceptionHandler
-    public ResponseEntity<Map<String, String>> handleClassCast(ClassCastException e)
-    {
-        return new ResponseEntity<>(Map.of("error", "All values should be of type string"), HttpStatus.BAD_REQUEST);
     }
 }

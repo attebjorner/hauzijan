@@ -1,18 +1,16 @@
 package com.gosha.kalosha.hauzijan.service.default_impl;
 
-import com.gosha.kalosha.hauzijan.dto.SentenceDto;
+import com.gosha.kalosha.hauzijan.model.dto.SentenceDto;
 import com.gosha.kalosha.hauzijan.exception_handing.NoSentencesFoundException;
-import com.gosha.kalosha.hauzijan.model.LanguageType;
-import com.gosha.kalosha.hauzijan.model.Sentence;
+import com.gosha.kalosha.hauzijan.model.enums.LanguageType;
+import com.gosha.kalosha.hauzijan.model.entity.Sentence;
+import com.gosha.kalosha.hauzijan.model.mapper.SentenceMapper;
 import com.gosha.kalosha.hauzijan.repository.SentenceRepository;
 import com.gosha.kalosha.hauzijan.service.SentenceService;
-import lombok.SneakyThrows;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -21,7 +19,7 @@ import org.springframework.test.util.ReflectionTestUtils;
 import java.util.List;
 import java.util.Map;
 
-import static com.gosha.kalosha.hauzijan.model.ParameterType.*;
+import static com.gosha.kalosha.hauzijan.util.ParameterType.*;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.mockito.ArgumentMatchers.*;
@@ -68,7 +66,7 @@ class DefaultSentenceServiceTest
         List<SentenceDto> expected = underTest.getBySimpleQuery(query, null, null);
         // then
         verify(sentenceRepository).findDistinctByOriginalSentenceContaining(query, pageable);
-        assertThat(expected).isEqualTo(List.of(SentenceDto.fromSentence(sentence)));
+        assertThat(expected).isEqualTo(List.of(SentenceMapper.toDto(sentence)));
     }
 
     @Test
@@ -83,7 +81,7 @@ class DefaultSentenceServiceTest
         List<SentenceDto> expected = underTest.getBySimpleQuery(query, null, 30);
         // then
         verify(sentenceRepository).findDistinctByOriginalSentenceContaining(query, pageable);
-        assertThat(expected).isEqualTo(List.of(SentenceDto.fromSentence(sentence)));
+        assertThat(expected).isEqualTo(List.of(SentenceMapper.toDto(sentence)));
     }
 
     @Test
@@ -98,7 +96,7 @@ class DefaultSentenceServiceTest
         List<SentenceDto> expected = underTest.getBySimpleQuery(query, 2, null);
         // then
         verify(sentenceRepository).findDistinctByOriginalSentenceContaining(query, pageable);
-        assertThat(expected).isEqualTo(List.of(SentenceDto.fromSentence(sentence)));
+        assertThat(expected).isEqualTo(List.of(SentenceMapper.toDto(sentence)));
     }
 
     @Test
@@ -113,7 +111,7 @@ class DefaultSentenceServiceTest
         List<SentenceDto> expected = underTest.getBySimpleQuery(query, 2, 30);
         // then
         verify(sentenceRepository).findDistinctByOriginalSentenceContaining(query, pageable);
-        assertThat(expected).isEqualTo(List.of(SentenceDto.fromSentence(sentence)));
+        assertThat(expected).isEqualTo(List.of(SentenceMapper.toDto(sentence)));
     }
 
     @Test
@@ -141,7 +139,7 @@ class DefaultSentenceServiceTest
         List<SentenceDto> expected = underTest.getByParameters(query, null, null);
         // then
         verify(sentenceRepository).findAllByLemma((String) query.get(LEMMA), pageable);
-        assertThat(expected).isEqualTo(List.of(SentenceDto.fromSentence(sentence)));
+        assertThat(expected).isEqualTo(List.of(SentenceMapper.toDto(sentence)));
     }
 
     @Test
@@ -156,7 +154,7 @@ class DefaultSentenceServiceTest
         List<SentenceDto> expected = underTest.getByParameters(query, null, null);
         // then
         verify(sentenceRepository).findAllByPos((String) query.get(POS), pageable);
-        assertThat(expected).isEqualTo(List.of(SentenceDto.fromSentence(sentence)));
+        assertThat(expected).isEqualTo(List.of(SentenceMapper.toDto(sentence)));
     }
 
     @Test
@@ -171,7 +169,7 @@ class DefaultSentenceServiceTest
         List<SentenceDto> expected = underTest.getByParameters(query, null, null);
         // then
         verify(sentenceRepository).findAllByGram(byGramString, pageable);
-        assertThat(expected).isEqualTo(List.of(SentenceDto.fromSentence(sentence)));
+        assertThat(expected).isEqualTo(List.of(SentenceMapper.toDto(sentence)));
     }
 
     @Test
@@ -189,7 +187,7 @@ class DefaultSentenceServiceTest
         List<SentenceDto> expected = underTest.getByParameters(query, null, null);
         // then
         verify(sentenceRepository).findAllByLemmaPos((String) query.get(LEMMA), (String) query.get(POS), pageable);
-        assertThat(expected).isEqualTo(List.of(SentenceDto.fromSentence(sentence)));
+        assertThat(expected).isEqualTo(List.of(SentenceMapper.toDto(sentence)));
     }
 
     @Test
@@ -207,7 +205,7 @@ class DefaultSentenceServiceTest
         List<SentenceDto> expected = underTest.getByParameters(query, null, null);
         // then
         verify(sentenceRepository).findAllByLemmaGram((String) query.get(LEMMA), byGramString, pageable);
-        assertThat(expected).isEqualTo(List.of(SentenceDto.fromSentence(sentence)));
+        assertThat(expected).isEqualTo(List.of(SentenceMapper.toDto(sentence)));
     }
 
     @Test
@@ -225,7 +223,7 @@ class DefaultSentenceServiceTest
         List<SentenceDto> expected =  underTest.getByParameters(query, null, null);
         // then
         verify(sentenceRepository).findAllByPosGram((String) query.get(POS), byGramString, pageable);
-        assertThat(expected).isEqualTo(List.of(SentenceDto.fromSentence(sentence)));
+        assertThat(expected).isEqualTo(List.of(SentenceMapper.toDto(sentence)));
     }
 
     @Test
@@ -247,7 +245,7 @@ class DefaultSentenceServiceTest
                 (String) query.get(LEMMA), (String) query.get(POS),
                 byGramString, pageable
         );
-        assertThat(expected).isEqualTo(List.of(SentenceDto.fromSentence(sentence)));
+        assertThat(expected).isEqualTo(List.of(SentenceMapper.toDto(sentence)));
     }
 
     @Test

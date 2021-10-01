@@ -1,9 +1,10 @@
 package com.gosha.kalosha.hauzijan.service.default_impl;
 
-import com.gosha.kalosha.hauzijan.dto.WordDto;
+import com.gosha.kalosha.hauzijan.model.dto.WordDto;
 import com.gosha.kalosha.hauzijan.exception_handing.NoSentencesFoundException;
 import com.gosha.kalosha.hauzijan.exception_handing.NoWordsFoundException;
-import com.gosha.kalosha.hauzijan.model.Word;
+import com.gosha.kalosha.hauzijan.model.entity.Word;
+import com.gosha.kalosha.hauzijan.model.mapper.WordMapper;
 import com.gosha.kalosha.hauzijan.repository.WordRepository;
 import com.gosha.kalosha.hauzijan.service.WordService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,7 +34,7 @@ public class DefaultWordService implements WordService
         {
             throw new NoWordsFoundException("Word with id " + id + " does not exist");
         }
-        return WordDto.fromWord(word.get());
+        return WordMapper.toDto(word.get());
     }
 
     @Override
@@ -77,6 +78,6 @@ public class DefaultWordService implements WordService
         {
             throw new NoSentencesFoundException("Sentence with id " + id + " does not exist");
         }
-        return wordList.stream().map(WordDto::fromWord).toList();
+        return wordList.stream().map(WordMapper::toDto).toList();
     }
 }

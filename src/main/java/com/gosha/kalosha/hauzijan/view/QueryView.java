@@ -1,6 +1,6 @@
 package com.gosha.kalosha.hauzijan.view;
 
-import com.gosha.kalosha.hauzijan.dto.SentenceDto;
+import com.gosha.kalosha.hauzijan.model.dto.SentenceDto;
 import com.gosha.kalosha.hauzijan.exception_handing.NoSentencesFoundException;
 import com.gosha.kalosha.hauzijan.service.SentenceService;
 import com.gosha.kalosha.hauzijan.service.WordService;
@@ -61,7 +61,6 @@ public class QueryView extends VerticalLayout
     @PostConstruct
     private void fillQueryMethodsMap()
     {
-        System.out.println("shit");
         serviceQueryMethods.put(String.class, () -> sentenceService.getBySimpleQuery((String) lastQuery, lastPage));
         serviceQueryMethods.put(HashMap.class, () -> sentenceService.getByParameters((Map<String, Object>) lastQuery, lastPage));
     }

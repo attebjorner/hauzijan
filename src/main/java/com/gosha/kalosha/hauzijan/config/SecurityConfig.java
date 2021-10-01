@@ -13,8 +13,15 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter
     @Override
     protected void configure(HttpSecurity http) throws Exception
     {
-        http.csrf().disable();
-        http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-        http.authorizeRequests().anyRequest().permitAll();
+        http.csrf().disable()
+                .authorizeRequests().regexMatchers("(?!/api/v2/query/wordlist/)\\w+").permitAll()
+                .and()
+                .authorizeRequests().antMatchers("/api/v2/query/wordlist/*").authenticated()
+                .and()
+                .httpBasic();
+
+//        http.csrf().disable();
+//        http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+//        http.authorizeRequests().anyRequest().permitAll();
     }
 }

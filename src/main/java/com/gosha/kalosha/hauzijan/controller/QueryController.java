@@ -1,7 +1,7 @@
 package com.gosha.kalosha.hauzijan.controller;
 
-import com.gosha.kalosha.hauzijan.dto.SentenceDto;
-import com.gosha.kalosha.hauzijan.dto.WordDto;
+import com.gosha.kalosha.hauzijan.model.dto.SentenceDto;
+import com.gosha.kalosha.hauzijan.model.dto.WordDto;
 import com.gosha.kalosha.hauzijan.service.SentenceService;
 import com.gosha.kalosha.hauzijan.service.WordService;
 import com.gosha.kalosha.hauzijan.util.QueryDecoder;

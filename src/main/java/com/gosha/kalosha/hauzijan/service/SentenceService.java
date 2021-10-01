@@ -1,7 +1,7 @@
 package com.gosha.kalosha.hauzijan.service;
 
-import com.gosha.kalosha.hauzijan.dto.SentenceDto;
-import com.gosha.kalosha.hauzijan.model.Sentence;
+import com.gosha.kalosha.hauzijan.model.dto.SentenceDto;
+import com.gosha.kalosha.hauzijan.model.entity.Sentence;
 
 import java.util.List;
 import java.util.Map;

@@ -1,6 +1,6 @@
 package com.gosha.kalosha.hauzijan.repository;
 
-import com.gosha.kalosha.hauzijan.model.Word;
+import com.gosha.kalosha.hauzijan.model.entity.Word;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;

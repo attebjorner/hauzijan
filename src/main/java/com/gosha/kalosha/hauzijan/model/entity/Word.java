@@ -1,18 +1,12 @@
-package com.gosha.kalosha.hauzijan.model;
+package com.gosha.kalosha.hauzijan.model.entity;
 
-import com.gosha.kalosha.hauzijan.dto.WordDto;
-import lombok.AllArgsConstructor;
+import com.gosha.kalosha.hauzijan.model.enums.LanguageType;
+import com.gosha.kalosha.hauzijan.model.NonNullPropertiesCopyable;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.beans.BeanUtils;
-import org.springframework.beans.BeanWrapper;
-import org.springframework.beans.BeanWrapperImpl;
 
 import javax.persistence.*;
-import java.beans.PropertyDescriptor;
-import java.lang.reflect.Field;
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Entity
 @Table(name = "wordforms")

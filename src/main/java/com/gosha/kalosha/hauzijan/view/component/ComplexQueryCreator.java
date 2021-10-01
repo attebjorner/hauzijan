@@ -12,7 +12,7 @@ import lombok.Setter;
 
 import java.util.*;
 
-import static com.gosha.kalosha.hauzijan.model.ParameterType.*;
+import static com.gosha.kalosha.hauzijan.util.ParameterType.*;
 
 @SpringComponent
 @UIScope

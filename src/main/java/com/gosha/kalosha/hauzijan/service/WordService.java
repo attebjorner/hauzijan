@@ -1,7 +1,7 @@
 package com.gosha.kalosha.hauzijan.service;
 
-import com.gosha.kalosha.hauzijan.dto.WordDto;
-import com.gosha.kalosha.hauzijan.model.Word;
+import com.gosha.kalosha.hauzijan.model.dto.WordDto;
+import com.gosha.kalosha.hauzijan.model.entity.Word;
 
 import java.util.List;
 
