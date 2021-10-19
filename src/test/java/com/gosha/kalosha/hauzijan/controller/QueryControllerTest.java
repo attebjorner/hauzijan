@@ -37,11 +37,11 @@ public class QueryControllerTest
     }
 
     @Test
-    public void willReturn400WhenSimpleQueryNotFoundSentences() throws Exception
+    public void willReturn204WhenSimpleQueryNotFoundSentences() throws Exception
     {
         var query = "abc";
         mockMvc.perform(get("/api/v2/query/simple").param("query", query))
-                .andExpect(status().isBadRequest())
+                .andExpect(status().isNoContent())
                 .andExpect(content().contentType(APPLICATION_JSON))
                 .andExpect(jsonPath("$.error").value("No sentences found"));
     }
@@ -132,12 +132,12 @@ public class QueryControllerTest
     }
 
     @Test
-    public void willReturn400WhenComplexQueryNotFoundSentences() throws Exception
+    public void willReturn204WhenComplexQueryNotFoundSentences() throws Exception
     {
         var query = "{\"lemma\":\"abc\"}";
         var encoded = new String(Base64.getEncoder().encode(query.getBytes(StandardCharsets.UTF_8)));
         mockMvc.perform(get("/api/v2/query/complex").param("encoded", encoded))
-                .andExpect(status().isBadRequest())
+                .andExpect(status().isNoContent())
                 .andExpect(content().contentType(APPLICATION_JSON))
                 .andExpect(jsonPath("$.error").value("No sentences found"));
     }
@@ -156,11 +156,11 @@ public class QueryControllerTest
     }
 
     @Test
-    public void willReturn400WhenSentenceWithIdNotFound() throws Exception
+    public void willReturn204WhenSentenceWithIdNotFound() throws Exception
     {
         var id = 1L;
         mockMvc.perform(get("/api/v2/query/wordlist/" + id))
-                .andExpect(status().isBadRequest())
+                .andExpect(status().isNoContent())
                 .andExpect(content().contentType(APPLICATION_JSON))
                 .andExpect(jsonPath("$.error").value("Sentence with id " + id + " does not exist"));
     }

@@ -1,6 +1,7 @@
 package com.gosha.kalosha.hauzijan.controller;
 
 import com.gosha.kalosha.hauzijan.exception_handing.IllegalParametersException;
+import com.gosha.kalosha.hauzijan.exception_handing.InvalidJsonException;
 import com.gosha.kalosha.hauzijan.exception_handing.NoSentencesFoundException;
 import com.gosha.kalosha.hauzijan.exception_handing.NoWordsFoundException;
 import org.springframework.http.HttpStatus;
@@ -17,13 +18,13 @@ public class ExceptionController
     @ExceptionHandler
     public ResponseEntity<Map<String, String>> handleNoSentencesFound(NoSentencesFoundException e)
     {
-        return new ResponseEntity<>(Map.of("error", e.getMessage()), HttpStatus.BAD_REQUEST);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).body(Map.of("error", e.getMessage()));
     }
 
     @ExceptionHandler
     public ResponseEntity<Map<String, String>> handleNoWordsFound(NoWordsFoundException e)
     {
-        return new ResponseEntity<>(Map.of("error", e.getMessage()), HttpStatus.BAD_REQUEST);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).body(Map.of("error", e.getMessage()));
     }
 
     @ExceptionHandler
@@ -35,13 +36,18 @@ public class ExceptionController
     @ExceptionHandler
     public ResponseEntity<Map<String, String>> handleIllegalState(IllegalStateException e)
     {
-        return new ResponseEntity<>(Map.of("error", e.getMessage()), HttpStatus.BAD_REQUEST);
+        return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
     }
 
     @ExceptionHandler
     public ResponseEntity<Map<String, String>> handleIllegalParameters(IllegalParametersException e)
     {
-        e.printStackTrace();
-        return new ResponseEntity<>(Map.of("error", e.getMessage()), HttpStatus.BAD_REQUEST);
+        return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
+    }
+
+    @ExceptionHandler
+    public ResponseEntity<Map<String, String>> handleInvalidJson(InvalidJsonException e)
+    {
+        return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
     }
 }

@@ -148,7 +148,14 @@ public class DefaultSentenceService implements SentenceService
             }
             String grammar = ((Map<String, String>) query.get(GRAM)).entrySet()
                     .stream()
-                    .map(e -> e.getKey() + "=" + e.getValue())
+                    .map(e ->
+                    {
+                        if (!(e.getValue() instanceof String))
+                        {
+                            throw new IllegalParametersException("All values should be of type string");
+                        }
+                        return e.getKey() + "=" + e.getValue();
+                    })
                     .sorted()
                     .collect(Collectors.joining("%"));
             fullQuery.put(GRAM, grammar);

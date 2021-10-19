@@ -1,6 +1,7 @@
 package com.gosha.kalosha.hauzijan.util;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.gosha.kalosha.hauzijan.exception_handing.InvalidJsonException;
 import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -27,7 +28,7 @@ public class QueryDecoder
         }
         catch (IOException e)
         {
-            throw new IllegalArgumentException("Invalid JSON");
+            throw new InvalidJsonException("Invalid JSON");
         }
     }
 }

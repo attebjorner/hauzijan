@@ -1,5 +1,6 @@
 package com.gosha.kalosha.hauzijan.service.default_impl;
 
+import com.gosha.kalosha.hauzijan.exception_handing.IllegalParametersException;
 import com.gosha.kalosha.hauzijan.model.dto.SentenceDto;
 import com.gosha.kalosha.hauzijan.exception_handing.NoSentencesFoundException;
 import com.gosha.kalosha.hauzijan.model.enums.LanguageType;
@@ -259,7 +260,7 @@ class DefaultSentenceServiceTest
         // when
         // then
         assertThatThrownBy(() -> underTest.getByParameters(query, null, null))
-                .isInstanceOf(IllegalArgumentException.class)
+                .isInstanceOf(IllegalParametersException.class)
                 .hasMessageContaining("Wrong query parameters");
         verify(sentenceRepository, never()).findAllByLemma(anyString(), any(PageRequest.class));
         verify(sentenceRepository, never()).findAllByLemmaGram(anyString(), anyString(), any(PageRequest.class));
@@ -276,7 +277,7 @@ class DefaultSentenceServiceTest
         // when
         // then
         assertThatThrownBy(() -> underTest.getByParameters(query, null, null))
-                .isInstanceOf(IllegalArgumentException.class)
+                .isInstanceOf(IllegalParametersException.class)
                 .hasMessageContaining("Grammar should be presented as a key-value structure");
         verify(sentenceRepository, never()).findAllByLemmaGram(anyString(), anyString(), any(PageRequest.class));
     }
