@@ -14,6 +14,7 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("${api.rest.endpoint}" + "query")
+@CrossOrigin("${api.frontend}")
 public class QueryController
 {
     private final WordService wordService;

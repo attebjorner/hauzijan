@@ -1,5 +1,6 @@
 package com.gosha.kalosha.hauzijan.view;
 
+import com.gosha.kalosha.hauzijan.exception_handing.NoSentencesFoundException;
 import com.vaadin.flow.router.*;
 import org.springframework.web.servlet.NoHandlerFoundException;
 
@@ -10,7 +11,7 @@ public class NotFoundRoute extends RouteNotFoundError
     @Override
     public int setErrorParameter(BeforeEnterEvent event, ErrorParameter<NotFoundException> parameter)
     {
-        event.rerouteToError(NoHandlerFoundException.class);
+        event.rerouteToError(NoSentencesFoundException.class, "abc");
         return HttpServletResponse.SC_NOT_FOUND;
     }
 }
