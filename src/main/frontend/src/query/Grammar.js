@@ -5,8 +5,6 @@ const Grammar = ({grammar, setGrammar}) => {
   const checkboxLeft = useRef(null);
   const checkboxRight = useRef(null);
 
-  // const selected = {};
-
   const grammarLeft = [
     {key: "Case", val: ["Acc", "Gen", "Tem"]},
     {key: "Person", val: ["1", "2", "3", "'1,2,3'"]},
