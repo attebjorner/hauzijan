@@ -1,7 +1,7 @@
 import {Col, Form, Row} from "react-bootstrap";
-import {useRef, useState} from "react";
+import {useEffect, useRef, useState} from "react";
 
-const Grammar = ({grammar, setGrammar}) => {
+const Grammar = ({grammar, setGrammar, complexQueries, queryId}) => {
   const checkboxLeft = useRef(null);
   const checkboxRight = useRef(null);
 
@@ -53,6 +53,31 @@ const Grammar = ({grammar, setGrammar}) => {
       }
     }
   }
+
+  useEffect(() => {
+    console.log("use effect in grammar");
+    let newGrammar = complexQueries[queryId].grammar;
+    [checkboxLeft, checkboxRight].map(ref => {
+      for (const category of ref.current.children) {
+        if (Object.keys(grammar).includes(category.id)) {
+          let checkboxes = category.children;
+          for (let i = 1; i < checkboxes.length; ++i) {
+            if (checkboxes[i].children[0].parentElement.innerText === grammar[category.id]) {
+              checkboxes[i].children[0].checked = false;
+            }
+          }
+        }
+        if (Object.keys(newGrammar).includes(category.id)) {
+          let checkboxes = category.children;
+          for (let i = 1; i < checkboxes.length; ++i) {
+            if (checkboxes[i].children[0].parentElement.innerText === newGrammar[category.id]) {
+              checkboxes[i].children[0].checked = true;
+            }
+          }
+        }
+      }
+    });
+  }, [complexQueries])
 
   const generateGrammar = (grammar, ref) => (
     <div ref={ref}>

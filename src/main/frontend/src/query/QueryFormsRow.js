@@ -5,8 +5,6 @@ import {useEffect, useState} from "react";
 import Grammar from "./Grammar";
 
 const QueryFormsRow = ({setLastQuery, setLoading, setPage}) => {
-  const [grammarOpen, setGrammarOpen] = useState(false);
-  const [grammar, setGrammar] = useState({});
   const [complexQueries, setComplexQueries] = useState([{lemma: "123", pos: "34", grammar: {}}]);
 
   const addComplexQuery = () => {
@@ -21,6 +19,12 @@ const QueryFormsRow = ({setLastQuery, setLoading, setPage}) => {
     setComplexQueries(t);
   }
 
+  const handleOnSearchClick = (e) => {
+    setLoading(true);
+    setPage(1);
+    setLastQuery(complexQueries);
+  };
+
   return (
       <Container className="query-row">
         <SimpleQueryForm
@@ -31,23 +35,12 @@ const QueryFormsRow = ({setLastQuery, setLoading, setPage}) => {
         {complexQueries.map((query, idx) => (
           <div key={idx}>
             <ComplexQueryForm
-              setLastQuery={setLastQuery}
-              setLoading={setLoading}
-              setPage={setPage}
-              grammarOpen={grammarOpen}
-              setGrammarOpen={setGrammarOpen}
-              grammar={grammar}
               addComplexQuery={addComplexQuery}
               removeComplexQuery={removeComplexQuery}
               queryId={idx}
               complexQueries={complexQueries}
               setComplexQueries={setComplexQueries}
             />
-            <Collapse in={grammarOpen}>
-              <div>
-                <Grammar grammar={grammar} setGrammar={setGrammar}/>
-              </div>
-            </Collapse>
           </div>
         ))}
         <Button variant="primary" className="mb-3">

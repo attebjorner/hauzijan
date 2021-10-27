@@ -1,11 +1,13 @@
-import {Button, Col, Form, Row} from "react-bootstrap";
+import {Button, Col, Collapse, Form, Row} from "react-bootstrap";
 import FloatingLabel from "react-bootstrap/cjs/FloatingLabel";
 import {useEffect, useState} from "react";
+import Grammar from "./Grammar";
 
-const ComplexQueryForm = ({setLastQuery, setLoading, setPage, grammarOpen, setGrammarOpen, grammar, addComplexQuery, removeComplexQuery, queryId, complexQueries, setComplexQueries}) => {
+const ComplexQueryForm = ({addComplexQuery, removeComplexQuery, queryId, complexQueries, setComplexQueries}) => {
   const [lemma, setLemma] = useState(complexQueries[queryId].lemma);
   const [pos, setPos] = useState(complexQueries[queryId].pos);
-  const [hasButtonAdd, setButtonAdd] = useState(true);
+  const [grammar, setGrammar] = useState(complexQueries[queryId].grammar);
+  const [grammarOpen, setGrammarOpen] = useState(false);
 
   const handleOnChangeLemma = (e) => {
     setLemma(e.target.value);
@@ -21,23 +23,15 @@ const ComplexQueryForm = ({setLastQuery, setLoading, setPage, grammarOpen, setGr
   const handleOnChangePos = (e) => {
     setPos(e.target.value);
     complexQueries[queryId].pos = pos;
-    setComplexQueries([...complexQueries])
-  };
-
-  const handleOnClick = (e) => {
-    setLoading(true);
-    setPage(1);
-    setLastQuery({lemma, pos, grammar});
+    // setComplexQueries([...complexQueries])
   };
 
   const handleOnAddClick = (e) => {
     addComplexQuery();
-    setButtonAdd(false);
   }
 
   const handleOnRemoveClick = (e) => {
     removeComplexQuery(queryId);
-    setButtonAdd(queryId === complexQueries.length - 1);
   }
 
   const handleGrammarWindow = (e) => {
@@ -47,8 +41,13 @@ const ComplexQueryForm = ({setLastQuery, setLoading, setPage, grammarOpen, setGr
   useEffect(() => {
     setLemma(complexQueries[queryId].lemma);
     setPos(complexQueries[queryId].pos);
-    setButtonAdd(queryId === complexQueries.length - 1);
+    setGrammar(complexQueries[queryId].grammar)
   }, [complexQueries])
+
+  useEffect(() => {
+    console.log("useeffect in form on grammar")
+    complexQueries[queryId].grammar = grammar;
+  }, [grammar])
 
   return (
     <div>
@@ -79,6 +78,11 @@ const ComplexQueryForm = ({setLastQuery, setLoading, setPage, grammarOpen, setGr
               </Button>
             </Col>}
         </Row>
+        <Collapse in={grammarOpen}>
+          <div>
+            <Grammar grammar={grammar} setGrammar={setGrammar} complexQueries={complexQueries} queryId={queryId}/>
+          </div>
+        </Collapse>
       </Form>
     </div>
   );
