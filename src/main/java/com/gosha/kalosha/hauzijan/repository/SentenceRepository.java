@@ -10,7 +10,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface SentenceRepository extends JpaRepository<Sentence, Long>
+public interface SentenceRepository extends JpaRepository<Sentence, Long>, SentenceRepositoryCustom
 {
     List<Sentence> findDistinctByOriginalSentenceContaining(String query, Pageable pageable);
 
@@ -27,27 +27,27 @@ public interface SentenceRepository extends JpaRepository<Sentence, Long>
     List<Sentence> findAllByLemmaPos(@Param("lemma") String lemma, @Param("pos") String pos, Pageable pageable);
 
     @Query("""
-           select distinct s from Word w
-           join w.sentences s
-           where w.lemma = :lemma and w.grammar like concat('%', :grammar, '%') order by s.id
-           """
+            select distinct s from Word w
+            join w.sentences s
+            where w.lemma = :lemma and w.grammar like concat('%', :grammar, '%') order by s.id
+            """
     )
     List<Sentence> findAllByLemmaGram(@Param("lemma") String lemma, @Param("grammar") String grammar, Pageable pageable);
 
     @Query("""
-           select distinct s from Word w
-           join w.sentences s
-           where w.pos = :pos and w.grammar like concat('%', :grammar, '%') order by s.id
-           """
+            select distinct s from Word w
+            join w.sentences s
+            where w.pos = :pos and w.grammar like concat('%', :grammar, '%') order by s.id
+            """
     )
     List<Sentence> findAllByPosGram(@Param("pos") String pos, @Param("grammar") String grammar, Pageable pageable);
 
     @Query("""
-           select distinct s from Word w
-           join w.sentences s
-           where w.lemma = :lemma and w.pos = :pos
-               and w.grammar like concat('%', :grammar, '%') order by s.id
-           """
+            select distinct s from Word w
+            join w.sentences s
+            where w.lemma = :lemma and w.pos = :pos
+                and w.grammar like concat('%', :grammar, '%') order by s.id
+            """
     )
     List<Sentence> findAllByLemmaPosGram(@Param("lemma") String lemma, @Param("pos") String pos,
                                          @Param("grammar") String grammar, Pageable pageable);

@@ -1,12 +1,12 @@
 import {useEffect, useState} from "react";
 import Placeholder from "react-bootstrap/Placeholder";
-import SentenceTable from "./table/SentenceTable";
-import WordTable from "./table/WordTable";
-import QueryFormsRow from "./query/QueryFormsRow";
+import SentenceTable from "../table/SentenceTable";
+import WordTable from "../table/WordTable";
+import QueryFormsRow from "../query/QueryFormsRow";
 import axios from "axios";
-import EmptyResultAlert from "./alert/EmptyResultAlert";
-import collectQuery from "./util";
-import PagingRow from "./PagingRow";
+import EmptyResultAlert from "../alert/EmptyResultAlert";
+import collectQuery from "../util";
+import PagingRow from "../table/PagingRow";
 import {Collapse} from "react-bootstrap";
 
 const Home = () => {
@@ -21,6 +21,7 @@ const Home = () => {
   const makeSentenceRequest = (url) => {
     axios.get("http://localhost:8080/api/v2/query/" + url + "&page=" + page)
       .then(response => {
+        setLoading(false);
         switch (response.status) {
           case 200:
             setSentences(response.data);
@@ -31,7 +32,6 @@ const Home = () => {
           default:
             throw Error();
         }
-        setLoading(false);
       })
       .catch(err => console.log(err));
   }

@@ -1,5 +1,5 @@
 import {Table} from 'react-bootstrap';
-import PagingRow from "../PagingRow";
+import PagingRow from "./PagingRow";
 import {useEffect, useState} from "react";
 
 const SentenceTable = ({sentences, findWords}) => {

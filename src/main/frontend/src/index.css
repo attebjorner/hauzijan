@@ -85,3 +85,11 @@ code {
 .checkbox-item {
   padding: 0 0 10px 0;
 }
+
+.simple-btn {
+  width: 50%;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  margin: auto;
+}

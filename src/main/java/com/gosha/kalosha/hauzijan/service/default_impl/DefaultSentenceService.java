@@ -1,6 +1,7 @@
 package com.gosha.kalosha.hauzijan.service.default_impl;
 
 import com.gosha.kalosha.hauzijan.exception_handing.IllegalParametersException;
+import com.gosha.kalosha.hauzijan.model.dto.ComplexQueryRequest;
 import com.gosha.kalosha.hauzijan.model.dto.SentenceDto;
 import com.gosha.kalosha.hauzijan.exception_handing.NoSentencesFoundException;
 import com.gosha.kalosha.hauzijan.model.entity.Sentence;
@@ -146,18 +147,7 @@ public class DefaultSentenceService implements SentenceService
             {
                 throw new IllegalParametersException("Grammar should be presented as a key-value structure");
             }
-            String grammar = ((Map<String, String>) query.get(GRAM)).entrySet()
-                    .stream()
-                    .map(e ->
-                    {
-                        if (!(e.getValue() instanceof String))
-                        {
-                            throw new IllegalParametersException("All values should be of type string");
-                        }
-                        return e.getKey() + "=" + e.getValue();
-                    })
-                    .sorted()
-                    .collect(Collectors.joining("%"));
+            String grammar = collectGrammar(query.get(GRAM));
             fullQuery.put(GRAM, grammar);
         }
         List<Sentence> sentences = queryMethod.find(fullQuery, pageProperties);
@@ -166,5 +156,43 @@ public class DefaultSentenceService implements SentenceService
             throw new NoSentencesFoundException("No sentences found");
         }
         return sentences.stream().map(SentenceMapper::toDto).toList();
+    }
+
+    public List<SentenceDto> getMultipleByParameters(List<ComplexQueryRequest> request, Integer page, Integer maxResults)
+    {
+        for (var term : request)
+        {
+            if (term.getGrammar() != null)
+            {
+                term.setStingifiedGrammar(collectGrammar(term.getGrammar()));
+            }
+        }
+        var sentences = sentenceRepository.findByMultipleComplexQuery(
+                request, page == null ? 0 : page - 1, maxResults == null ? 20 : maxResults
+        );
+        if (sentences.isEmpty())
+        {
+            throw new NoSentencesFoundException("No sentences found");
+        }
+        return sentences
+                .stream()
+                .map(SentenceMapper::toDto)
+                .toList();
+    }
+
+    private String collectGrammar(Object grammar)
+    {
+        return ((Map<String, String>) grammar).entrySet()
+                .stream()
+                .map(e ->
+                {
+                    if (!(e.getValue() instanceof String))
+                    {
+                        throw new IllegalParametersException("All values should be of type string");
+                    }
+                    return e.getKey() + "=" + e.getValue();
+                })
+                .sorted()
+                .collect(Collectors.joining("%"));
     }
 }

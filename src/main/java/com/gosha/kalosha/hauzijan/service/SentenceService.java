@@ -1,5 +1,6 @@
 package com.gosha.kalosha.hauzijan.service;
 
+import com.gosha.kalosha.hauzijan.model.dto.ComplexQueryRequest;
 import com.gosha.kalosha.hauzijan.model.dto.SentenceDto;
 import com.gosha.kalosha.hauzijan.model.entity.Sentence;
 
@@ -23,4 +24,6 @@ public interface SentenceService
     List<SentenceDto> getByParameters(Map<String, Object> query, int page);
 
     List<SentenceDto> getByParameters(Map<String, Object> query, Integer page, Integer maxResults);
+
+    List<SentenceDto> getMultipleByParameters(List<ComplexQueryRequest> request, Integer page, Integer maxResults);
 }

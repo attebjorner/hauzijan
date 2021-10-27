@@ -1,24 +1,35 @@
-import {Col, Collapse, Container, Row} from "react-bootstrap";
+import {Button, Col, Collapse, Container, Row} from "react-bootstrap";
 import SimpleQueryForm from "./SimpleQueryForm";
 import ComplexQueryForm from "./ComplexQueryForm";
-import {useState} from "react";
+import {useEffect, useState} from "react";
 import Grammar from "./Grammar";
 
 const QueryFormsRow = ({setLastQuery, setLoading, setPage}) => {
   const [grammarOpen, setGrammarOpen] = useState(false);
   const [grammar, setGrammar] = useState({});
+  const [complexQueries, setComplexQueries] = useState([{lemma: "123", pos: "34", grammar: {}}]);
+
+  const addComplexQuery = () => {
+    setComplexQueries([...complexQueries, {lemma: "", pos: "", grammar: {}}]);
+  }
+
+  const removeComplexQuery = (idx) => {
+    let t = [];
+    for (let i = 0; i < complexQueries.length; ++i) {
+      if (i !== idx) t.push(complexQueries[i]);
+    }
+    setComplexQueries(t);
+  }
 
   return (
-      <Container>
-        <Row className="query-row">
-          <Col>
-            <SimpleQueryForm
-              setLastQuery={setLastQuery}
-              setLoading={setLoading}
-              setPage={setPage}
-            />
-          </Col>
-          <Col>
+      <Container className="query-row">
+        <SimpleQueryForm
+          setLastQuery={setLastQuery}
+          setLoading={setLoading}
+          setPage={setPage}
+        />
+        {complexQueries.map((query, idx) => (
+          <div key={idx}>
             <ComplexQueryForm
               setLastQuery={setLastQuery}
               setLoading={setLoading}
@@ -26,14 +37,22 @@ const QueryFormsRow = ({setLastQuery, setLoading, setPage}) => {
               grammarOpen={grammarOpen}
               setGrammarOpen={setGrammarOpen}
               grammar={grammar}
+              addComplexQuery={addComplexQuery}
+              removeComplexQuery={removeComplexQuery}
+              queryId={idx}
+              complexQueries={complexQueries}
+              setComplexQueries={setComplexQueries}
             />
-          </Col>
-        </Row>
-        <Collapse in={grammarOpen}>
-          <div>
-            <Grammar grammar={grammar} setGrammar={setGrammar}/>
+            <Collapse in={grammarOpen}>
+              <div>
+                <Grammar grammar={grammar} setGrammar={setGrammar}/>
+              </div>
+            </Collapse>
           </div>
-        </Collapse>
+        ))}
+        <Button variant="primary" className="mb-3">
+          Search
+        </Button>
       </Container>
   );
 };

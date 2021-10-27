@@ -1,5 +1,5 @@
 import {Col, Form, Row} from "react-bootstrap";
-import {useRef} from "react";
+import {useRef, useState} from "react";
 
 const Grammar = ({grammar, setGrammar}) => {
   const checkboxLeft = useRef(null);
@@ -34,7 +34,7 @@ const Grammar = ({grammar, setGrammar}) => {
     const pressedCategory = e.target.name;
     const pressedValue = e.target.parentElement.innerText;
 
-    let temp = grammar
+    let temp = {...grammar};
     if (e.target.checked) {
       temp[pressedCategory] = pressedValue
     } else {

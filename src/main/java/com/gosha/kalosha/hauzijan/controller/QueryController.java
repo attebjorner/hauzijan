@@ -1,5 +1,6 @@
 package com.gosha.kalosha.hauzijan.controller;
 
+import com.gosha.kalosha.hauzijan.model.dto.ComplexQueryRequest;
 import com.gosha.kalosha.hauzijan.model.dto.SentenceDto;
 import com.gosha.kalosha.hauzijan.model.dto.WordDto;
 import com.gosha.kalosha.hauzijan.service.SentenceService;
@@ -57,8 +58,20 @@ public class QueryController
                                               @RequestParam(required = false) Integer page,
                                               @RequestParam(required = false, name = "max_results") Integer maxResults)
     {
-        Map<String, Object> query = (Map<String, Object>) decoder.decodeJsonToObject(encoded, Map.class);
+        var query = (Map<String, Object>) decoder.decodeJsonToObject(encoded, Map.class);
         return sentenceService.getByParameters(query, page, maxResults);
+    }
+
+    @SneakyThrows
+    @GetMapping("multiple")
+    public List<SentenceDto> makeMultipleComplexQuery(@RequestParam List<String> encoded,
+                                                      @RequestParam(required = false) Integer page,
+                                                      @RequestParam(required = false, name = "max_results") Integer maxResults)
+    {
+        var query = encoded.stream()
+                .map(s -> decoder.decodeJsonToObject(s, ComplexQueryRequest.class))
+                .toList();
+        return sentenceService.getMultipleByParameters(query, page, maxResults);
     }
 
     /**

@@ -1,8 +1,8 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './index.css'
 import {BrowserRouter as Router, Route, Switch} from 'react-router-dom';
-import Home from "./Home";
-import Contact from "./Contact";
+import Home from "./page/Home";
+import Contact from "./page/Contact";
 import MainNavbar from "./MainNavbar";
 
 function App() {

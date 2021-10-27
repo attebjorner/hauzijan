@@ -143,6 +143,42 @@ public class QueryControllerTest
     }
 
     @Test
+    public void shouldHandleSingleQueryWhenMultiple() throws Exception
+    {
+        var query1 = "{\"pos\":\"NOUN\"}";
+        var encoded1 = new String(Base64.getEncoder().encode(query1.getBytes(StandardCharsets.UTF_8)));
+        mockMvc.perform(get("/api/v2/query/multiple").param("encoded", encoded1))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(APPLICATION_JSON));
+    }
+
+    @Test
+    public void shouldHandleMultipleQueries() throws Exception
+    {
+        var query1 = "{\"pos\":\"NOUN\"}";
+        var query2 = "{\"pos\":\"VERB\"}";
+        var encoded1 = new String(Base64.getEncoder().encode(query1.getBytes(StandardCharsets.UTF_8)));
+        var encoded2 = new String(Base64.getEncoder().encode(query2.getBytes(StandardCharsets.UTF_8)));
+        mockMvc.perform(get("/api/v2/query/multiple").param("encoded", encoded1, encoded2))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(APPLICATION_JSON));
+    }
+
+    @Test
+    public void shouldHandleMultipleQueriesWithMultipleValues() throws Exception
+    {
+        var query1 = "{\"lemma\":\"הוא\", \"gram\":{\"Number\":\"Sing\",\"Person\":\"1\"}}";
+        var query2 = "{\"pos\":\"VERB\"}";
+        var query3 = "{\"pos\":\"NOUN\"}";
+        var encoded1 = new String(Base64.getEncoder().encode(query1.getBytes(StandardCharsets.UTF_8)));
+        var encoded2 = new String(Base64.getEncoder().encode(query2.getBytes(StandardCharsets.UTF_8)));
+        var encoded3 = new String(Base64.getEncoder().encode(query3.getBytes(StandardCharsets.UTF_8)));
+        mockMvc.perform(get("/api/v2/query/multiple").param("encoded", encoded1, encoded2, encoded3))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(APPLICATION_JSON));
+    }
+
+    @Test
     public void canGetWordlist() throws Exception
     {
         mockMvc.perform(get("/api/v2/query/wordlist/6293"))

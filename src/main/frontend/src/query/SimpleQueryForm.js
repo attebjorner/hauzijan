@@ -26,7 +26,7 @@ const SimpleQueryForm = ({setLastQuery, setLoading, setPage}) => {
         <FloatingLabel controlId="floatingInput" label="Simple query" className="mb-3">
           <Form.Control dir="rtl" onChange={handleOnChange} onKeyPress={handleOnEnter} type="text" placeholder="example" />
         </FloatingLabel>
-        <Button onClick={handleOnClick} variant="primary" className="mb-3">
+        <Button onClick={handleOnClick} variant="primary" className="mb-3 simple-btn">
           Search
         </Button>
       </Form>
