@@ -19,9 +19,11 @@ const Home = () => {
   const [sentenceOpen, setSentenceOpen] = useState(false)
 
   const makeSentenceRequest = (url) => {
+    console.log(123);
     axios.get("http://localhost:8080/api/v2/query/" + url + "&page=" + page)
       .then(response => {
         setLoading(false);
+        console.log(response.status);
         switch (response.status) {
           case 200:
             setSentences(response.data);
@@ -33,15 +35,19 @@ const Home = () => {
             throw Error();
         }
       })
-      .catch(err => console.log(err));
+      .catch(err => {
+        setLoading(false);
+        console.log(err);
+      });
   }
 
   const findSentences = () => {
     if (typeof lastQuery == "string") {
       makeSentenceRequest("simple?query=" + lastQuery);
     } else if (typeof lastQuery == "object") {
-      const query = collectQuery(lastQuery.lemma, lastQuery.pos, lastQuery.grammar);
-      makeSentenceRequest("complex?encoded=" + query);
+      console.log(lastQuery);
+      const query = collectQuery(lastQuery);
+      makeSentenceRequest("multiple?encoded=" + query);
     }
   };
 

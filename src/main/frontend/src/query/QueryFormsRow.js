@@ -5,7 +5,7 @@ import {useEffect, useState} from "react";
 import Grammar from "./Grammar";
 
 const QueryFormsRow = ({setLastQuery, setLoading, setPage}) => {
-  const [complexQueries, setComplexQueries] = useState([{lemma: "123", pos: "34", grammar: {}}]);
+  const [complexQueries, setComplexQueries] = useState([{lemma: "", pos: "", grammar: {}}]);
 
   const addComplexQuery = () => {
     setComplexQueries([...complexQueries, {lemma: "", pos: "", grammar: {}}]);
@@ -22,7 +22,8 @@ const QueryFormsRow = ({setLastQuery, setLoading, setPage}) => {
   const handleOnSearchClick = (e) => {
     setLoading(true);
     setPage(1);
-    setLastQuery(complexQueries);
+    console.log(complexQueries);
+    setLastQuery([...complexQueries]);
   };
 
   return (
@@ -39,11 +40,10 @@ const QueryFormsRow = ({setLastQuery, setLoading, setPage}) => {
               removeComplexQuery={removeComplexQuery}
               queryId={idx}
               complexQueries={complexQueries}
-              setComplexQueries={setComplexQueries}
             />
           </div>
         ))}
-        <Button variant="primary" className="mb-3">
+        <Button onClick={handleOnSearchClick} variant="primary" className="mb-3">
           Search
         </Button>
       </Container>

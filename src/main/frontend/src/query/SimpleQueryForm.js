@@ -3,7 +3,6 @@ import FloatingLabel from "react-bootstrap/cjs/FloatingLabel";
 import {useState} from "react";
 
 const SimpleQueryForm = ({setLastQuery, setLoading, setPage}) => {
-
   const [query, setQuery] = useState(null);
 
   const handleOnChange = (e) => {

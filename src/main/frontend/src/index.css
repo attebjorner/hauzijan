@@ -93,3 +93,8 @@ code {
   align-items:center;
   margin: auto;
 }
+
+.complex-query-form {
+  border-color: black;
+  border-width: 2px;
+}

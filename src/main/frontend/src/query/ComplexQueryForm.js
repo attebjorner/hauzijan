@@ -3,7 +3,7 @@ import FloatingLabel from "react-bootstrap/cjs/FloatingLabel";
 import {useEffect, useState} from "react";
 import Grammar from "./Grammar";
 
-const ComplexQueryForm = ({addComplexQuery, removeComplexQuery, queryId, complexQueries, setComplexQueries}) => {
+const ComplexQueryForm = ({addComplexQuery, removeComplexQuery, queryId, complexQueries}) => {
   const [lemma, setLemma] = useState(complexQueries[queryId].lemma);
   const [pos, setPos] = useState(complexQueries[queryId].pos);
   const [grammar, setGrammar] = useState(complexQueries[queryId].grammar);
@@ -16,14 +16,12 @@ const ComplexQueryForm = ({addComplexQuery, removeComplexQuery, queryId, complex
     console.log(complexQueries);
     complexQueries[queryId].lemma = lemma;
     console.log(complexQueries);
-    // setComplexQueries([...complexQueries])
     console.log(complexQueries);
   };
 
   const handleOnChangePos = (e) => {
     setPos(e.target.value);
     complexQueries[queryId].pos = pos;
-    // setComplexQueries([...complexQueries])
   };
 
   const handleOnAddClick = (e) => {
@@ -51,14 +49,21 @@ const ComplexQueryForm = ({addComplexQuery, removeComplexQuery, queryId, complex
 
   return (
     <div>
-      <Form>
-        <FloatingLabel controlId="floatingInput" label="Lemma" dir="rtl" className="mb-3">
-          <Form.Control value={lemma} onChange={handleOnChangeLemma} type="text" placeholder="example" />
-        </FloatingLabel>
-        <FloatingLabel controlId="floatingInput" label="POS" className="mb-3">
-          <Form.Control value={pos} onChange={handleOnChangePos} type="text" placeholder="example" />
-        </FloatingLabel>
+      <Form className="complex-query-form">
+        <Row>
+          <Col>
+            <FloatingLabel controlId="floatingInput" label="Lemma" dir="rtl" className="mb-3">
+              <Form.Control value={lemma} onChange={handleOnChangeLemma} type="text" placeholder="example" />
+            </FloatingLabel>
+          </Col>
+          <Col>
+            <FloatingLabel controlId="floatingInput" label="POS" className="mb-3">
+              <Form.Control value={pos} onChange={handleOnChangePos} type="text" placeholder="example" />
+            </FloatingLabel>
+          </Col>
+        </Row>
         <h6>Grammar: {JSON.stringify(grammar).replaceAll(/["{}]/g, "")}</h6>
+
         <Row>
           <Col>
             <Button onClick={handleGrammarWindow} variant="primary" className="mb-3">
@@ -78,6 +83,7 @@ const ComplexQueryForm = ({addComplexQuery, removeComplexQuery, queryId, complex
               </Button>
             </Col>}
         </Row>
+
         <Collapse in={grammarOpen}>
           <div>
             <Grammar grammar={grammar} setGrammar={setGrammar} complexQueries={complexQueries} queryId={queryId}/>

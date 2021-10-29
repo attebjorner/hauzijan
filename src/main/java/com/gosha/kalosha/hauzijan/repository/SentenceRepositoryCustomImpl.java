@@ -15,10 +15,7 @@ public class SentenceRepositoryCustomImpl implements SentenceRepositoryCustom
     @PersistenceContext
     private EntityManager entityManager;
 
-    @Override
-    public List<Sentence> findByMultipleComplexQuery(List<ComplexQueryRequest> request, int page, int maxResults)
-    {
-        var query = new StringBuilder("""
+    private final String queryTemplate = """
                 with x as\s
                 (
                 	select sx.id si, sx.original_sentence os, sx.translation t, sx.lang lang,
@@ -31,16 +28,32 @@ public class SentenceRepositoryCustomImpl implements SentenceRepositoryCustom
                 )
                                 
                 select distinct x1.si id, x1.os original_sentence, x1.t translation, x1.lang lang from x x1
-                """);
-        var joinTemplate = """
+                """;
+
+    private final String joinTemplate = """
                 join x x%d
                 on x%d.o + 1 = x%d.o and x%d.i + 1 = x%d.i
                 """;
-        var lemmaTemplate = "x%d.lemma = ?%d";
-        var posTemplate = "x%d.pos = ?%d";
-        var grammarTemplate = "x%d.gram like ?%d";
-        var pagingTemplate = " limit %d offset %d";
+
+    private final String lemmaTemplate = "x%d.lemma = ?%d";
+
+    private final String posTemplate = "x%d.pos = ?%d";
+
+    private final String grammarColumnTemplate = "x%d.gram";
+
+    private final String grammarDelimiter = " || '_' || ";
+
+    private final String grammarTemplate = "%s like ?%d ";
+
+    private final String pagingTemplate = " limit %d offset %d";
+
+    @Override
+    public List<Sentence> findByMultipleComplexQuery(List<ComplexQueryRequest> request, int page, int maxResults)
+    {
+        var query = new StringBuilder(queryTemplate);
         var conditions = new ArrayList<String[]>(request.size() * 3);
+        var grammarColumns = new ArrayList<String>(request.size());
+        var grammarSearchStrings = new ArrayList<String>(request.size());
 
         for (int i = 0; i < request.size(); ++i)
         {
@@ -55,17 +68,36 @@ public class SentenceRepositoryCustomImpl implements SentenceRepositoryCustom
             }
             if (request.get(i).getStingifiedGrammar() != null)
             {
-                conditions.add(new String[]{request.get(i).getStingifiedGrammar(), grammarTemplate.formatted(i + 1, conditions.size())});
+                grammarColumns.add(grammarColumnTemplate.formatted(i + 1));
+                grammarSearchStrings.add("%" + request.get(i).getStingifiedGrammar() + "%");
             }
         }
+        
         query.append("where ");
         query.append(conditions.stream().map(a -> a[1]).collect(Collectors.joining(" and ")));
+        if (!grammarColumns.isEmpty())
+        {
+            if (!conditions.isEmpty())
+            {
+                query.append(" and ");
+            }
+            var grammarColumnsString = String.join(grammarDelimiter, grammarColumns);
+            query.append(grammarTemplate.formatted(grammarColumnsString, conditions.size()));
+        }
         query.append(pagingTemplate.formatted(maxResults, page * maxResults));
+
         var nativeQuery = entityManager.createNativeQuery(query.toString(), Sentence.class);
         for (int i = 0; i < conditions.size(); ++i)
         {
             nativeQuery.setParameter(i, conditions.get(i)[0]);
         }
-        return nativeQuery.getResultList();
+        if (!grammarColumns.isEmpty())
+        {
+            var grammarSearchString = String.join("_", grammarSearchStrings);
+            nativeQuery.setParameter(conditions.size(), grammarSearchString);
+        }
+        var x = nativeQuery.getResultList();
+        int a = 2;
+        return x;
     }
 }
