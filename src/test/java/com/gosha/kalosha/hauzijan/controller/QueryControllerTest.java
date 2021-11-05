@@ -1,5 +1,6 @@
 package com.gosha.kalosha.hauzijan.controller;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
@@ -186,6 +187,18 @@ public class QueryControllerTest
         var encoded2 = new String(Base64.getEncoder().encode(query2.getBytes(StandardCharsets.UTF_8)));
         var encoded3 = new String(Base64.getEncoder().encode(query3.getBytes(StandardCharsets.UTF_8)));
         mockMvc.perform(get("/api/v2/query/multiple").param("encoded", encoded1, encoded2, encoded3))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(APPLICATION_JSON));
+    }
+
+    @Test
+    public void shouldHandleMultipleQueriesWithNounConsNoun() throws Exception
+    {
+        var query1 = "{\"pos\":\"NOUN\", \"grammar\":{\"Definite\":\"Cons\"}}";
+        var query2 = "{\"pos\":\"NOUN\"}";
+        var encoded1 = new String(Base64.getEncoder().encode(query1.getBytes(StandardCharsets.UTF_8)));
+        var encoded2 = new String(Base64.getEncoder().encode(query2.getBytes(StandardCharsets.UTF_8)));
+        mockMvc.perform(get("/api/v2/query/multiple").param("encoded", encoded1, encoded2))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(APPLICATION_JSON));
     }

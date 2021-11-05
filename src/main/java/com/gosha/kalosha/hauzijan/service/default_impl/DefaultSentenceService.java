@@ -94,18 +94,14 @@ public class DefaultSentenceService implements SentenceService
     @Override
     public List<SentenceDto> getBySimpleQuery(String queryString, int page)
     {
-        return getBySimpleQuery(queryString, page, null);
+        return getBySimpleQuery(queryString, page, 20);
     }
 
     @Override
-    public List<SentenceDto> getBySimpleQuery(String queryString, Integer page, Integer maxResults)
+    public List<SentenceDto> getBySimpleQuery(String queryString, int page, int maxResults)
     {
         List<Sentence> sentences = sentenceRepository.findDistinctByOriginalSentenceContaining(
-                queryString, PageRequest.of(
-                        page == null ? 0 : page - 1,
-                        maxResults == null ? 20 : maxResults,
-                        Sort.by("id")
-                )
+                queryString, PageRequest.of(page, maxResults, Sort.by("id"))
         );
         if (sentences.isEmpty())
         {
@@ -117,20 +113,18 @@ public class DefaultSentenceService implements SentenceService
     @Override
     public List<SentenceDto> getByParameters(Map<String, Object> query, int page)
     {
-        return getByParameters(query, page, null);
+        return getByParameters(query, page, 20);
     }
 
     @Override
-    public List<SentenceDto> getByParameters(Map<String, Object> query, Integer page, Integer maxResults)
+    public List<SentenceDto> getByParameters(Map<String, Object> query, int page, int maxResults)
     {
         var queryMethod = COMPLEX_QUERY_METHODS.get(query.keySet());
         if (queryMethod == null)
         {
             throw new IllegalParametersException("Wrong query parameters");
         }
-        var pageProperties = PageRequest.of(
-                page == null ? 0 : page - 1, maxResults == null ? 20 : maxResults
-        );
+        var pageProperties = PageRequest.of(page, maxResults);
         var fullQuery = new HashMap<String, String>();
         try
         {
@@ -158,7 +152,8 @@ public class DefaultSentenceService implements SentenceService
         return sentences.stream().map(SentenceMapper::toDto).toList();
     }
 
-    public List<SentenceDto> getMultipleByParameters(List<ComplexQueryRequest> request, Integer page, Integer maxResults)
+    @Override
+    public List<SentenceDto> getMultipleByParameters(List<ComplexQueryRequest> request, int page, int maxResults)
     {
         for (var term : request)
         {
@@ -167,9 +162,7 @@ public class DefaultSentenceService implements SentenceService
                 term.setStingifiedGrammar(collectGrammar(term.getGrammar()));
             }
         }
-        var sentences = sentenceRepository.findByMultipleComplexQuery(
-                request, page == null ? 0 : page - 1, maxResults == null ? 20 : maxResults
-        );
+        var sentences = sentenceRepository.findByMultipleComplexQuery(request, page, maxResults);
         if (sentences.isEmpty())
         {
             throw new NoSentencesFoundException("No sentences found");

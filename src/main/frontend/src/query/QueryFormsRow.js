@@ -1,10 +1,9 @@
-import {Button, Col, Collapse, Container, Row} from "react-bootstrap";
+import {Button, Container} from "react-bootstrap";
 import SimpleQueryForm from "./SimpleQueryForm";
 import ComplexQueryForm from "./ComplexQueryForm";
-import {useEffect, useState} from "react";
-import Grammar from "./Grammar";
+import {useState} from "react";
 
-const QueryFormsRow = ({setLastQuery, setLoading, setPage}) => {
+const QueryFormsRow = ({setLastQuery, setPage}) => {
   const [complexQueries, setComplexQueries] = useState([{lemma: "", pos: "", grammar: {}}]);
 
   const addComplexQuery = () => {
@@ -20,9 +19,7 @@ const QueryFormsRow = ({setLastQuery, setLoading, setPage}) => {
   }
 
   const handleOnSearchClick = (e) => {
-    setLoading(true);
     setPage(1);
-    console.log(complexQueries);
     setLastQuery([...complexQueries]);
   };
 
@@ -30,7 +27,6 @@ const QueryFormsRow = ({setLastQuery, setLoading, setPage}) => {
       <Container className="query-row">
         <SimpleQueryForm
           setLastQuery={setLastQuery}
-          setLoading={setLoading}
           setPage={setPage}
         />
         {complexQueries.map((query, idx) => (

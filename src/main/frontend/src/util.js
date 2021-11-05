@@ -1,17 +1,19 @@
 function collectQuery(complexQueries) {
   return complexQueries.map(query => {
-    if (query.lemma === "") {
-      delete query.lemma;
+    let newQuery = {};
+    if (query.lemma !== "") {
+      newQuery.lemma = query.lemma;
     }
-    if (query.pos === "") {
-      delete query.pos;
+    if (query.pos !== "") {
+      newQuery.pos = query.pos;
     }
-    if (Object.keys(query.grammar).length === 0) {
-      delete query.grammar;
+    if (Object.keys(query.grammar).length !== 0) {
+      newQuery.grammar = query.grammar;
     }
-    console.log(query);
-    return Buffer.from(JSON.stringify(query).replaceAll(",,", ",")).toString("base64");
-  }).join();
+    return (Object.keys(newQuery).length !== 0)
+      ? Buffer.from(JSON.stringify(newQuery).replaceAll(",,", ",")).toString("base64")
+      : "";
+  }).filter(s => s !== "").join();
 }
 
 export default collectQuery;

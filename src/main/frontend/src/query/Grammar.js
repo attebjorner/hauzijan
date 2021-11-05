@@ -55,7 +55,6 @@ const Grammar = ({grammar, setGrammar, complexQueries, queryId}) => {
   }
 
   useEffect(() => {
-    console.log("use effect in grammar");
     let newGrammar = complexQueries[queryId].grammar;
     [checkboxLeft, checkboxRight].map(ref => {
       for (const category of ref.current.children) {

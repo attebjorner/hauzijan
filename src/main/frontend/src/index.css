@@ -50,17 +50,19 @@ code {
   width: 150px;
 }
 
-.custom-button {
+.custom-button, .custom-button:focus {
   color: rgba(255,255,255,.55) !important;
   text-align: start !important;
   display: block !important;
   padding: .5rem 0 .5rem 0 !important;
   text-decoration: none !important;
   transition: color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out !important;
-
+  background-color: rgba(0,0,0,.0) !important;
+  box-shadow: 0 0 0 0 !important;
+  border-color: rgba(0,0,0,.0) !important;
 }
 
-.custom-button:hover, .custom-button:focus {
+.custom-button:hover {
   color: rgba(255,255,255,.75) !important;
   background-color: rgba(0,0,0,.0) !important;
   box-shadow: 0 0 0 0 !important;

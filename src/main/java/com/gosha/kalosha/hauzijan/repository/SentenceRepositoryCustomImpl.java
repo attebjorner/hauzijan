@@ -15,18 +15,7 @@ public class SentenceRepositoryCustomImpl implements SentenceRepositoryCustom
     @PersistenceContext
     private EntityManager entityManager;
 
-    private final String queryTemplate = """
-                with x as\s
-                (
-                	select sx.id si, sx.original_sentence os, sx.translation t, sx.lang lang,
-                 	sw.id i, wordlist_order o, lemma, pos, gram
-                	from sentences_wordforms sw
-                	inner join wordforms wx
-                	on sw.wordform_id = wx.id
-                	inner join sentences sx
-                	on sx.id = sw.sentence_id
-                )
-                                
+    private final String queryTemplate = """           
                 select distinct x1.si id, x1.os original_sentence, x1.t translation, x1.lang lang from x x1
                 """;
 
@@ -41,7 +30,7 @@ public class SentenceRepositoryCustomImpl implements SentenceRepositoryCustom
 
     private final String grammarColumnTemplate = "x%d.gram";
 
-    private final String grammarDelimiter = " || '_' || ";
+    private final String grammarDelimiter = " || '\\_' || ";
 
     private final String grammarTemplate = "%s like ?%d ";
 
@@ -93,11 +82,9 @@ public class SentenceRepositoryCustomImpl implements SentenceRepositoryCustom
         }
         if (!grammarColumns.isEmpty())
         {
-            var grammarSearchString = String.join("_", grammarSearchStrings);
+            var grammarSearchString = String.join("\\_", grammarSearchStrings);
             nativeQuery.setParameter(conditions.size(), grammarSearchString);
         }
-        var x = nativeQuery.getResultList();
-        int a = 2;
-        return x;
+        return nativeQuery.getResultList();
     }
 }

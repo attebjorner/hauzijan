@@ -11,17 +11,12 @@ const ComplexQueryForm = ({addComplexQuery, removeComplexQuery, queryId, complex
 
   const handleOnChangeLemma = (e) => {
     setLemma(e.target.value);
-    console.log(e.target.value);
-    console.log(lemma);
-    console.log(complexQueries);
-    complexQueries[queryId].lemma = lemma;
-    console.log(complexQueries);
-    console.log(complexQueries);
+    complexQueries[queryId].lemma = e.target.value;
   };
 
   const handleOnChangePos = (e) => {
     setPos(e.target.value);
-    complexQueries[queryId].pos = pos;
+    complexQueries[queryId].pos = e.target.value;
   };
 
   const handleOnAddClick = (e) => {
@@ -43,7 +38,6 @@ const ComplexQueryForm = ({addComplexQuery, removeComplexQuery, queryId, complex
   }, [complexQueries])
 
   useEffect(() => {
-    console.log("useeffect in form on grammar")
     complexQueries[queryId].grammar = grammar;
   }, [grammar])
 

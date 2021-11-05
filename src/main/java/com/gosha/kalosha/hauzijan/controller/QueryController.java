@@ -15,7 +15,7 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("${api.rest.endpoint}" + "query")
-@CrossOrigin("${api.frontend}")
+@CrossOrigin({"${api.frontend.development}", "${api.frontend.production}"})
 public class QueryController
 {
     private final WordService wordService;
@@ -40,10 +40,10 @@ public class QueryController
      */
     @GetMapping("simple")
     public List<SentenceDto> makeSimpleQuery(@RequestParam String query,
-                                             @RequestParam(required = false) Integer page,
-                                             @RequestParam(required = false, name = "max_results") Integer maxResults)
+                                             @RequestParam(required = false, defaultValue = "1") int page,
+                                             @RequestParam(required = false, defaultValue = "20", name = "max_results") int maxResults)
     {
-        return sentenceService.getBySimpleQuery(query, page, maxResults);
+        return sentenceService.getBySimpleQuery(query, page - 1, maxResults);
     }
 
     /**
@@ -55,23 +55,23 @@ public class QueryController
     @SneakyThrows
     @GetMapping("complex")
     public List<SentenceDto> makeComplexQuery(@RequestParam String encoded,
-                                              @RequestParam(required = false) Integer page,
-                                              @RequestParam(required = false, name = "max_results") Integer maxResults)
+                                              @RequestParam(required = false, defaultValue = "1") int page,
+                                              @RequestParam(required = false, defaultValue = "20", name = "max_results") int maxResults)
     {
         var query = (Map<String, Object>) decoder.decodeJsonToObject(encoded, Map.class);
-        return sentenceService.getByParameters(query, page, maxResults);
+        return sentenceService.getByParameters(query, page - 1, maxResults);
     }
 
     @SneakyThrows
     @GetMapping("multiple")
     public List<SentenceDto> makeMultipleComplexQuery(@RequestParam List<String> encoded,
-                                                      @RequestParam(required = false) Integer page,
-                                                      @RequestParam(required = false, name = "max_results") Integer maxResults)
+                                                      @RequestParam(required = false, defaultValue = "1") int page,
+                                                      @RequestParam(required = false, defaultValue = "20", name = "max_results") int maxResults)
     {
         var query = encoded.stream()
                 .map(s -> decoder.decodeJsonToObject(s, ComplexQueryRequest.class))
                 .toList();
-        return sentenceService.getMultipleByParameters(query, page, maxResults);
+        return sentenceService.getMultipleByParameters(query, page - 1, maxResults);
     }
 
     /**

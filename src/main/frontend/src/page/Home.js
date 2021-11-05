@@ -4,32 +4,38 @@ import SentenceTable from "../table/SentenceTable";
 import WordTable from "../table/WordTable";
 import QueryFormsRow from "../query/QueryFormsRow";
 import axios from "axios";
-import EmptyResultAlert from "../alert/EmptyResultAlert";
+import EmptyAlert from "../alert/EmptyAlert";
 import collectQuery from "../util";
 import PagingRow from "../table/PagingRow";
 import {Collapse} from "react-bootstrap";
 
 const Home = () => {
+  const apiUrl = "http://localhost:8080/api/v2/query/";
   const [loading, setLoading] = useState(false);
   const [emptyResult, setEmptyResult] = useState(false);
+  const [emptyQuery, setEmptyQuery] = useState(false);
   const [sentences, setSentences] = useState(null);
   const [words, setWords] = useState(null);
   const [page, setPage] = useState(1)
-  const [lastQuery, setLastQuery] = useState(1)
+  const [lastQuery, setLastQuery] = useState(0)
   const [sentenceOpen, setSentenceOpen] = useState(false)
 
   const makeSentenceRequest = (url) => {
-    console.log(123);
-    axios.get("http://localhost:8080/api/v2/query/" + url + "&page=" + page)
+    setEmptyQuery(false);
+    setLoading(true);
+    axios.get(apiUrl + url + "&page=" + page)
       .then(response => {
         setLoading(false);
-        console.log(response.status);
         switch (response.status) {
           case 200:
             setSentences(response.data);
             break;
           case 204:
-            setSentences([]);
+            if (page !== 1) {
+              setPage(page - 1);
+            } else {
+              setSentences([]);
+            }
             break;
           default:
             throw Error();
@@ -43,10 +49,17 @@ const Home = () => {
 
   const findSentences = () => {
     if (typeof lastQuery == "string") {
+      if (lastQuery === "") {
+        setEmptyQuery(true);
+        return;
+      }
       makeSentenceRequest("simple?query=" + lastQuery);
     } else if (typeof lastQuery == "object") {
-      console.log(lastQuery);
       const query = collectQuery(lastQuery);
+      if (query === "") {
+        setEmptyQuery(true);
+        return;
+      }
       makeSentenceRequest("multiple?encoded=" + query);
     }
   };
@@ -56,7 +69,7 @@ const Home = () => {
   }, [lastQuery, page]);
 
   const findWords = (id) => {
-    axios.get("http://localhost:8080/api/v2/query/wordlist/" + id)
+    axios.get(apiUrl + "wordlist/" + id)
       .then(response => {
         switch (response.status) {
           case 200:
@@ -79,13 +92,13 @@ const Home = () => {
     <div className="home-body">
       <QueryFormsRow
         setLastQuery={setLastQuery}
-        setLoading={setLoading}
         setPage={setPage}
       />
       <Collapse in={loading}>
         <Placeholder as="p" animation="glow"><Placeholder xs={10} /></Placeholder>
       </Collapse>
-      {emptyResult && <EmptyResultAlert/>}
+      {emptyResult && <EmptyAlert msg={"Nothing found"}/>}
+      {emptyQuery && <EmptyAlert msg={"Your query is empty"}/>}
       <Collapse in={sentenceOpen}>
         <div>
           {sentences && <>

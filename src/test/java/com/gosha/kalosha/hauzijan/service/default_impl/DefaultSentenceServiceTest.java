@@ -64,7 +64,7 @@ class DefaultSentenceServiceTest
         given(sentenceRepository.findDistinctByOriginalSentenceContaining(anyString(), any(PageRequest.class)))
                 .willReturn(List.of(sentence));
         // when
-        List<SentenceDto> expected = underTest.getBySimpleQuery(query, null, null);
+        List<SentenceDto> expected = underTest.getBySimpleQuery(query, 0, 20);
         // then
         verify(sentenceRepository).findDistinctByOriginalSentenceContaining(query, pageable);
         assertThat(expected).isEqualTo(List.of(SentenceMapper.toDto(sentence)));
@@ -79,7 +79,7 @@ class DefaultSentenceServiceTest
         given(sentenceRepository.findDistinctByOriginalSentenceContaining(anyString(), any(PageRequest.class)))
                 .willReturn(List.of(sentence));
         // when
-        List<SentenceDto> expected = underTest.getBySimpleQuery(query, null, 30);
+        List<SentenceDto> expected = underTest.getBySimpleQuery(query, 0, 30);
         // then
         verify(sentenceRepository).findDistinctByOriginalSentenceContaining(query, pageable);
         assertThat(expected).isEqualTo(List.of(SentenceMapper.toDto(sentence)));
@@ -94,7 +94,7 @@ class DefaultSentenceServiceTest
         given(sentenceRepository.findDistinctByOriginalSentenceContaining(anyString(), any(PageRequest.class)))
                 .willReturn(List.of(sentence));
         // when
-        List<SentenceDto> expected = underTest.getBySimpleQuery(query, 2, null);
+        List<SentenceDto> expected = underTest.getBySimpleQuery(query, 1, 20);
         // then
         verify(sentenceRepository).findDistinctByOriginalSentenceContaining(query, pageable);
         assertThat(expected).isEqualTo(List.of(SentenceMapper.toDto(sentence)));
@@ -109,7 +109,7 @@ class DefaultSentenceServiceTest
         given(sentenceRepository.findDistinctByOriginalSentenceContaining(anyString(), any(PageRequest.class)))
                 .willReturn(List.of(sentence));
         // when
-        List<SentenceDto> expected = underTest.getBySimpleQuery(query, 2, 30);
+        List<SentenceDto> expected = underTest.getBySimpleQuery(query, 1, 30);
         // then
         verify(sentenceRepository).findDistinctByOriginalSentenceContaining(query, pageable);
         assertThat(expected).isEqualTo(List.of(SentenceMapper.toDto(sentence)));
@@ -123,7 +123,7 @@ class DefaultSentenceServiceTest
         var pageable = PageRequest.of(1, 30, Sort.by("id"));
         // when
         // then
-        assertThatThrownBy(() -> underTest.getBySimpleQuery(query, 2, 30))
+        assertThatThrownBy(() -> underTest.getBySimpleQuery(query, 1, 30))
                 .isInstanceOf(NoSentencesFoundException.class);
         verify(sentenceRepository).findDistinctByOriginalSentenceContaining(query, pageable);
     }
@@ -137,7 +137,7 @@ class DefaultSentenceServiceTest
         given(sentenceRepository.findAllByLemma(anyString(), any(PageRequest.class)))
                 .willReturn(List.of(sentence));
         // when
-        List<SentenceDto> expected = underTest.getByParameters(query, null, null);
+        List<SentenceDto> expected = underTest.getByParameters(query, 0, 20);
         // then
         verify(sentenceRepository).findAllByLemma((String) query.get(LEMMA), pageable);
         assertThat(expected).isEqualTo(List.of(SentenceMapper.toDto(sentence)));
@@ -152,7 +152,7 @@ class DefaultSentenceServiceTest
         given(sentenceRepository.findAllByPos(anyString(), any(PageRequest.class)))
                 .willReturn(List.of(sentence));
         // when
-        List<SentenceDto> expected = underTest.getByParameters(query, null, null);
+        List<SentenceDto> expected = underTest.getByParameters(query, 0, 20);
         // then
         verify(sentenceRepository).findAllByPos((String) query.get(POS), pageable);
         assertThat(expected).isEqualTo(List.of(SentenceMapper.toDto(sentence)));
@@ -167,7 +167,7 @@ class DefaultSentenceServiceTest
         given(sentenceRepository.findAllByGram(anyString(), any(PageRequest.class)))
                 .willReturn(List.of(sentence));
         // when
-        List<SentenceDto> expected = underTest.getByParameters(query, null, null);
+        List<SentenceDto> expected = underTest.getByParameters(query, 0, 20);
         // then
         verify(sentenceRepository).findAllByGram(byGramString, pageable);
         assertThat(expected).isEqualTo(List.of(SentenceMapper.toDto(sentence)));
@@ -185,7 +185,7 @@ class DefaultSentenceServiceTest
         given(sentenceRepository.findAllByLemmaPos(anyString(), anyString(), any(PageRequest.class)))
                 .willReturn(List.of(sentence));
         // when
-        List<SentenceDto> expected = underTest.getByParameters(query, null, null);
+        List<SentenceDto> expected = underTest.getByParameters(query, 0, 20);
         // then
         verify(sentenceRepository).findAllByLemmaPos((String) query.get(LEMMA), (String) query.get(POS), pageable);
         assertThat(expected).isEqualTo(List.of(SentenceMapper.toDto(sentence)));
@@ -203,7 +203,7 @@ class DefaultSentenceServiceTest
         given(sentenceRepository.findAllByLemmaGram(anyString(), anyString(), any(PageRequest.class)))
                 .willReturn(List.of(sentence));
         // when
-        List<SentenceDto> expected = underTest.getByParameters(query, null, null);
+        List<SentenceDto> expected = underTest.getByParameters(query, 0, 20);
         // then
         verify(sentenceRepository).findAllByLemmaGram((String) query.get(LEMMA), byGramString, pageable);
         assertThat(expected).isEqualTo(List.of(SentenceMapper.toDto(sentence)));
@@ -221,7 +221,7 @@ class DefaultSentenceServiceTest
         given(sentenceRepository.findAllByPosGram(anyString(), anyString(), any(PageRequest.class)))
                 .willReturn(List.of(sentence));
         // when
-        List<SentenceDto> expected =  underTest.getByParameters(query, null, null);
+        List<SentenceDto> expected =  underTest.getByParameters(query, 0, 20);
         // then
         verify(sentenceRepository).findAllByPosGram((String) query.get(POS), byGramString, pageable);
         assertThat(expected).isEqualTo(List.of(SentenceMapper.toDto(sentence)));
@@ -240,7 +240,7 @@ class DefaultSentenceServiceTest
         given(sentenceRepository.findAllByLemmaPosGram(anyString(), anyString(), anyString(), any(PageRequest.class)))
                 .willReturn(List.of(sentence));
         // when
-        List<SentenceDto> expected = underTest.getByParameters(query, null, null);
+        List<SentenceDto> expected = underTest.getByParameters(query, 0, 20);
         // then
         verify(sentenceRepository).findAllByLemmaPosGram(
                 (String) query.get(LEMMA), (String) query.get(POS),
@@ -259,7 +259,7 @@ class DefaultSentenceServiceTest
         );
         // when
         // then
-        assertThatThrownBy(() -> underTest.getByParameters(query, null, null))
+        assertThatThrownBy(() -> underTest.getByParameters(query, 0, 20))
                 .isInstanceOf(IllegalParametersException.class)
                 .hasMessageContaining("Wrong query parameters");
         verify(sentenceRepository, never()).findAllByLemma(anyString(), any(PageRequest.class));
@@ -276,7 +276,7 @@ class DefaultSentenceServiceTest
         );
         // when
         // then
-        assertThatThrownBy(() -> underTest.getByParameters(query, null, null))
+        assertThatThrownBy(() -> underTest.getByParameters(query, 0, 20))
                 .isInstanceOf(IllegalParametersException.class)
                 .hasMessageContaining("Grammar should be presented as a key-value structure");
         verify(sentenceRepository, never()).findAllByLemmaGram(anyString(), anyString(), any(PageRequest.class));
@@ -292,7 +292,7 @@ class DefaultSentenceServiceTest
         var pageable = PageRequest.of(1, 30);
         // when
         // then
-        assertThatThrownBy(() -> underTest.getByParameters(query, 2, 30))
+        assertThatThrownBy(() -> underTest.getByParameters(query, 1, 30))
                 .isInstanceOf(NoSentencesFoundException.class);
         verify(sentenceRepository).findAllByLemma((String) query.get(LEMMA), pageable);
     }

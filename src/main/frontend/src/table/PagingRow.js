@@ -1,5 +1,4 @@
-import {Badge, Button, Col, Container, Pagination, Row} from "react-bootstrap";
-import {useEffect, useState} from "react";
+import {Pagination} from "react-bootstrap";
 
 const PagingRow = ({page, setPage}) => {
 
