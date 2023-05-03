@@ -5,7 +5,6 @@ import com.gosha.kalosha.hauzijan.model.entity.Sentence;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import javax.persistence.Query;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -55,10 +54,10 @@ public class SentenceRepositoryCustomImpl implements SentenceRepositoryCustom
             {
                 conditions.add(new String[]{request.get(i).getPos(), posTemplate.formatted(i + 1, conditions.size())});
             }
-            if (request.get(i).getStingifiedGrammar() != null)
+            if (request.get(i).getStringifiedGrammar() != null)
             {
                 grammarColumns.add(grammarColumnTemplate.formatted(i + 1));
-                grammarSearchStrings.add("%" + request.get(i).getStingifiedGrammar() + "%");
+                grammarSearchStrings.add("%" + request.get(i).getStringifiedGrammar() + "%");
             }
         }
         

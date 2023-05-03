@@ -17,5 +17,5 @@ public class ComplexQueryRequest
 
     private Map<String, String> grammar;
 
-    private String stingifiedGrammar;
+    private String stringifiedGrammar;
 }

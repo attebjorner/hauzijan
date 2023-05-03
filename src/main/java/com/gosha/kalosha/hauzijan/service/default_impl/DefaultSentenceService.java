@@ -159,7 +159,7 @@ public class DefaultSentenceService implements SentenceService
         {
             if (term.getGrammar() != null)
             {
-                term.setStingifiedGrammar(collectGrammar(term.getGrammar()));
+                term.setStringifiedGrammar(collectGrammar(term.getGrammar()));
             }
         }
         var sentences = sentenceRepository.findByMultipleComplexQuery(request, page, maxResults);

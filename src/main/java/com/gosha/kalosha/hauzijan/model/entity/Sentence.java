@@ -11,7 +11,9 @@ import java.util.List;
 
 @Entity
 @Table(name = "sentences")
-@Data @NoArgsConstructor @AllArgsConstructor
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class Sentence implements NonNullPropertiesCopyable
 {
     @Id

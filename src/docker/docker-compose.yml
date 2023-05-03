@@ -1,0 +1,33 @@
+version: '3.1'
+
+services:  
+  backend:
+    image: 'backend:latest'
+    build:
+      context: ./backend/
+    depends_on:
+      - dbp
+    ports:
+      - '8081:8081'
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://dbp:5432/docker_dbp_1
+      - SPRING_DATASOURCE_USERNAME=theuser
+      - SPRING_DATASOURCE_PASSWORD=123
+
+  dbp:
+    image: 'postgres:13.1-alpine'
+    environment:
+      - POSTGRES_USER=theuser
+      - POSTGRES_PASSWORD=123
+      - POSTGRES_DB=docker_dbp_1
+    ports:
+      - '5438:5432'
+    volumes:
+      - ./backend/d/:/docker-entrypoint-initdb.d/
+  
+  frontend:
+    image: frontend:latest
+    build:
+      context: ./frontend/
+    ports:
+      - 8080:8080

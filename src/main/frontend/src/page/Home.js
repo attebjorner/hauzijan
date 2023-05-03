@@ -10,7 +10,7 @@ import PagingRow from "../table/PagingRow";
 import {Collapse} from "react-bootstrap";
 
 const Home = () => {
-  const apiUrl = "http://localhost:8081/api/v2/query/";
+  const apiUrl = "http://backend:8081/api/v2/query/";
   const [loading, setLoading] = useState(false);
   const [emptyResult, setEmptyResult] = useState(false);
   const [emptyQuery, setEmptyQuery] = useState(false);
